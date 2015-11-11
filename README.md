@@ -1,6 +1,7 @@
-# Reasonable JavaScript Style Guide
+# A Reasonable JavaScript Style Guide
 
-*A reasonable approach to JavaScript*
+Finally decided it's time to make an agreement on how I write JavaScript.
+I describe it as a clear, concise and predictable approach.
 
 ## Table of Contents
 
@@ -131,7 +132,7 @@
     const item = {};
     ```
 
-  - [3.2](#3.2) <a name='3.2'></a> If your code will be executed in browsers in script context, don't use [reserved words](http://es5.github.io/#x7.6.1) as keys. It won't work in IE8. [More info](https://github.com/airbnb/javascript/issues/61). It’s OK to use them in ES6 modules and server-side code.
+  - [3.2](#3.2) <a name='3.2'></a> If your code will be executed in browsers in script context, don't use [reserved words](http://es5.github.io/#x7.6.1) as keys. It won't work in IE8. It’s OK to use them in ES6 modules and server-side code.
 
     ```javascript
     // bad
@@ -785,15 +786,15 @@
 
     ```javascript
     // bad
-    const AirbnbStyleGuide = require('./AirbnbStyleGuide');
-    module.exports = AirbnbStyleGuide.es6;
+    const PersonalStyleGuide = require('./PersonalStyleGuide');
+    module.exports = PersonalStyleGuide.es6;
 
     // ok
-    import AirbnbStyleGuide from './AirbnbStyleGuide';
-    export default AirbnbStyleGuide.es6;
+    import PersonalStyleGuide from './PersonalStyleGuide';
+    export default PersonalStyleGuide.es6;
 
     // best
-    import { es6 } from './AirbnbStyleGuide';
+    import { es6 } from './PersonalStyleGuide';
     export default es6;
     ```
 
@@ -803,10 +804,10 @@
 
     ```javascript
     // bad
-    import * as AirbnbStyleGuide from './AirbnbStyleGuide';
+    import * as PersonalStyleGuide from './PersonalStyleGuide';
 
     // good
-    import AirbnbStyleGuide from './AirbnbStyleGuide';
+    import PersonalStyleGuide from './PersonalStyleGuide';
     ```
 
   - [10.3](#10.3) <a name='10.3'></a>And do not export directly from an import.
@@ -816,11 +817,11 @@
     ```javascript
     // bad
     // filename es6.js
-    export { es6 as default } from './airbnbStyleGuide';
+    export { es6 as default } from './personalStyleGuide';
 
     // good
     // filename es6.js
-    import { es6 } from './AirbnbStyleGuide';
+    import { es6 } from './PersonalStyleGuide';
     export default es6;
     ```
 
@@ -1810,12 +1811,12 @@
   - [22.8](#22.8) <a name='22.8'></a> Use PascalCase when you export a singleton / function library / bare object.
 
     ```javascript
-    const AirbnbStyleGuide = {
+    const PersonalStyleGuide = {
       es6: {
       }
     };
 
-    export default AirbnbStyleGuide;
+    export default PersonalStyleGuide;
     ```
 
 
