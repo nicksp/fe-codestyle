@@ -1,0 +1,335 @@
+# ECMAScript 6 Style Guide
+
+This section describes code style for [ECMAScript® 2015 Language Specification](http://www.ecma-international.org/publications/standards/Ecma-262.htm).
+
+## Table of Contents
+
+  1. [Strict Mode](#strict-mode)
+  1. [Variable Declaration](#variable-declaration)
+  1. [Classes](#classes)
+  1. [Arrow Functions](#arrow-functions)
+  1. [Template Strings](#template-strings)
+  1. [Generators](#generators)
+  1. [Strings](#strings)
+  1. [Functions](#functions)
+  1. [Arrow Functions](#arrow-functions)
+  1. [Constructors](#constructors)
+  1. [Modules](#modules)
+  1. [Iterators and Generators](#iterators-and-generators)
+  1. [Properties](#properties)
+  1. [Variables](#variables)
+  1. [Hoisting](#hoisting)
+  1. [Comparison Operators & Equality](#comparison-operators--equality)
+  1. [Blocks](#blocks)
+
+## Strict Mode
+
+- [Strict mode](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Strict_mode) should be used.
+
+  > Explanation:
+  > - It prevents nasty [bugs](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Strict_mode#Changes_in_strict_mode).
+  > - Many useful features of language (e.g. [classes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes), [let declaration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let), [block scopes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let#Block_scope_with_let)) are available only in strict mode.
+  > - It simplifies migration to [ECMAScript modules](https://hacks.mozilla.org/2015/08/es6-in-depth-modules/),
+  because they are always in strict mode. No need to apply it to ES6 modules though.
+
+- Strict mode should be enabled explicitly using the `'use strict'` directive.
+
+  > Explanation:
+  > - Dependencies of your code may not work in strict mode.
+  > - Your code can be used in non-strict mode.
+
+**[⬆ back to TOC](#table-of-contents)**
+
+## Variable Declaration
+
+- Avoid using `var`.
+- All immutable references should be declared using a [const](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/const).
+- [let](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let) should be used only for mutable references
+(i.e. when variable might be (re)assigned different value later in the code)
+
+  ```js
+  // Bad
+
+  // Reader expects count to change!
+  let count = observers.length;
+  let index = 0;
+  while (index < count) {
+    const observer = observers[index];
+    observer(...args);
+    index += 1;
+  }
+
+  const count = observers.length;
+  let index = 0;
+  while (index < count) {
+    // Reader expects observer to change within the block!
+    let observer = observers[index];
+    observer(...args);
+    index += 1;
+  }
+
+  const count = observers.length;
+  // Do not use `var`
+  var index = 0;
+  while (index < count) {
+    observers[index](...args);
+    index += 1;
+  }
+
+  // Good
+  const count = observers.length;
+  let index = 0;
+  while (index < count) {
+    const observer = observers[index];
+    observer(...args);
+    index += 1;
+  }
+  ```
+
+- If the reference is immutable, but the value is mutable, `const` declaration should be used:
+
+  ```js
+  // Bad
+  let person = {};
+  person.name = 'Nick';
+
+  // Good
+  const person = {};
+  person.name = 'Nick';
+  ```
+
+**[⬆ back to TOC](#table-of-contents)**
+
+## Classes
+
+- For class definition the `class` keyword should be used:
+
+  ```js
+  // Bad
+  function Circle(x, y, radius) {
+    this.x = x;
+    this.y = y;
+    this.radius = radius;
+  }
+
+  Circle.prototype.area = function () {
+    return Math.PI * Math.pow(this.radius, 2);
+  };
+
+  // Good
+  class Circle {
+    constructor(x, y, radius) {
+      this.x = x;
+      this.y = y;
+      this.radius = radius;
+    }
+
+    area() {
+      return Math.PI * Math.pow(this.radius, 2);
+    }
+  }
+  ```
+
+- There should be one whitespace after the class name:
+
+  ```js
+  // Bad
+  class Circle{}
+
+  // Good
+  class Circle {}
+  ```
+
+- There should be no whitespace after method name:
+
+  ```js
+  // Bad
+  class Circle {
+    area () {}
+  }
+
+  // Good
+  class Circle {
+    area() {}
+  }
+  ```
+
+- There should be one whitespace before the opening curly brace of method's body:
+
+  ```js
+  // Bad
+  class Circle {
+    area(){}
+  }
+
+  // Good
+  class Circle {
+    area() {}
+  }
+  ```
+
+- The constructor (if exists) should be the first method in a class definition:
+
+  ```js
+  // Bad
+  class Circle {
+    area() {}
+
+    constructor() {}
+  }
+
+  // Good
+  class Circle {
+    constructor() {}
+
+    area() {}
+  }
+  ```
+
+- For inheritance the `extends` keyword should be used:
+
+  ```js
+  // Bad
+  var module = require('module');
+
+  class Stream() {
+    constructor() {
+      EventEmitter.call(this);
+    }
+  }
+
+  module.inherits(Stream, EventEmitter);
+
+  // Good
+  class Stream extends EventEmitter {}
+  ```
+
+**[⬆ back to TOC](#table-of-contents)**
+
+## Arrow Functions
+
+- [Arrow function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions)
+  should be used where an anonymous function is expected (when you need function and you don't want bind it to an
+  identifier) or even when exporting function from ES6 module:
+
+  > Explanation: Arrow functions capture the `this` value of the enclosing context. That prevents run-time errors with
+  > unexpected values of `this`. Also it's a more efficient method than binding `this` value using
+  > `Function.prototype.bind`.
+
+  ```js
+  [1, 2, 3].map((x) => {
+      // ...
+  });
+
+  // Use `function` here, because we're passing `ctx` as `this` argument.
+  [1, 2, 3].map(function (x) {
+      // ...
+  }, ctx);
+  ```
+
+- Always add parentheses around arrow function parameters:
+
+  > Explanation:
+  > - This style is consistent with cases when function takes zero or more than one parameters.
+  > - You need to alter the code less times, if the number of parameters changes.
+
+  ```js
+  // Bad
+  [1, 2, 3].map(x => x * 2);
+
+  // Good
+  [1, 2, 3].map((x) => x * 2);
+  [1, 2, 3].reduce((i, n) => i + n);
+  ```
+
+- Before and after an arrow function's fat arrow (`=>`) whitespace is required:
+
+  ```js
+  // Bad
+  [1, 2, 3].map((x)=> x * 2);
+
+  // Good
+  [1, 2, 3].map((x) => x * 2);
+  ```
+
+- If the function body consists of a single expression, braces should be omitted:
+
+  ```js
+  // Bad
+  [1, 2, 3].map((x) => { return x * 2; });
+
+  // Good
+  [1, 2, 3].map((x) => x * 2);
+  ```
+
+**[⬆ back to TOC](#table-of-contents)**
+
+## Template Strings
+
+- Spaces in placeholders (between `${` and `}`) should not be used:
+
+  ```js
+  // Bad
+  `Hello ${ name }`
+
+  // Good
+  `Hello ${name}`
+  ```
+
+**[⬆ back to TOC](#table-of-contents)**
+
+## Generators
+
+- The asterisk `*` in a [generator declaration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*) should be sticked to the `function` keyword:
+
+  ```js
+  // Bad
+  function *createIterator() {
+    yield 1;
+  }
+
+  const createIterator = function * () {
+    yield 1;
+  };
+
+  // Good
+  function* createIterator() {
+    yield 1;
+  }
+
+  const createIterator = function* () {
+    yield 1;
+  };
+  ```
+
+- In a [shorthand method](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Method_definitions) the asterisk should be sticked to the `method name`:
+
+  ```js
+  // Bad
+  class Graph {
+    * edges() {}
+  }
+
+  // Good
+  class Graph {
+    *edges() {}
+  }
+  ```
+
+- In a [yield* expression](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/yield*) the asterisk should be sticked to the `yield` keyword:
+
+  **Good:**
+
+  ```js
+  // Bad
+  function* gen() {
+    yield *anotherGen();
+  }
+
+  // Good
+  function* gen() {
+    yield* anotherGen();
+  }
+  ```
+
+**[⬆ back to TOC](#table-of-contents)**
