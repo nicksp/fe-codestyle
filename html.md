@@ -13,7 +13,10 @@ A set of best practices and guidelines for writing HTML. It aims at improving co
 
 ## General Formatting Rules
 
-- **Use soft-tabs** with a 2 space indent. Spaces are the only way to guarantee code renders the same in any person’s environment.
+- **Use soft tabs** with a 2 space indent. Spaces are the only way to guarantee code renders the same in any person’s environment and improve readability. Always be consistent in your use of whitespace.
+
+  ***Pro tip:*** use an [EditorConfig](http://editorconfig.org/) file (or equivalent) to help maintain the basic whitespace conventions that have been agreed for your code-base. For an example, see [the one in my Redux boilerplate](https://github.com/nicksp/redux-webpack-es6-boilerplate/blob/extended/.editorconfig).
+
 - **Use only lowercase.** All code has to be lowercase. This applies to HTML element names, attributes, and attribute values (unless text/CDATA).
 
   ```html
@@ -48,11 +51,26 @@ A set of best practices and guidelines for writing HTML. It aims at improving co
 
 ## HTML Formatting Rules
 
-- **Use HTML5** document type. HTML5 syntax is preferred for all HTML documents:
+- **Use HTML5** document type. HTML5 syntax is preferred for all HTML documents. It enforces standards mode and allows consistent rendering in every browser:
 
   ```html
   <!DOCTYPE html>
   ```
+
+- Turn on **IE compatibility mode**. Internet Explorer supports the use of a document compatibility `<meta>` tag to specify what version of IE the page should be rendered as.
+
+  ```html
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  ```
+
+- Define **character encoding**. When doing so, you may avoid using character entities in your HTML.
+
+  ```html
+  <head>
+    <meta charset="UTF-8">
+  </head>
+  ```
+
 - **Strive to write valid HTML where possible**. Use tools such as the [W3C Nu Html Checker](https://validator.w3.org/nu/) to test.
 
   ```html
@@ -75,9 +93,9 @@ A set of best practices and guidelines for writing HTML. It aims at improving co
   <!-- Recommended -->
   The symbol for the copyright is “©”.
   ```
-- **Use a new line** for every block, list, or table element, and indent every such child element. Also, indent them if they are child elements of a block, list, or table element.
+- **Use a new line** for every block, list, or table element, and **indent** every such child element. Also, indent them if they are child elements of a block, list, or table element.
 - **Separate structure from presentation and from behavior.** Strictly keep structure (markup), presentation (styling), and behavior (scripting) apart, and try to keep the interaction between the three to an absolute minimum.
-- **Omit `type` attributes for style sheets and scripts.** Do not use type attributes for style sheets (unless not using CSS) and scripts (unless not using JavaScript).
+- **Omit `type` attributes for style sheets and JS scripts.** Do not use type attributes for stylesheets and JavaScript files.
 
   ```html
   <!-- Not recommended -->
@@ -99,7 +117,7 @@ A set of best practices and guidelines for writing HTML. It aims at improving co
   <a class="button button-secondary">Correct Button</a>
   ```
 - **Avoid writing closing tag comments**, like `<!-- /.element -->`. This just adds to page load time. Plus, most editors have indentation guides and open-close tag highlighting.
-- **Avoid trailing slashes in self-closing elements.** For example, `<br>`, `<hr>`, `<img>`, and `<input>`.
+- **Avoid trailing slashes in self-closing elements.** For example, `<br>`, `<hr>`, `<img>`, and `<input>`. [HTML5 spec](https://dev.w3.org/html5/spec-author-view/syntax.html#syntax-start-tag) says they're optional.
 - **Don’t set `tabindex` manually** — rely on the browser to set the order for you.
 
 **[⬆ back to TOC](#table-of-contents)**
