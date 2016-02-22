@@ -8,7 +8,7 @@ This document outlines opinionated CSS and Sass code style guide. Influenced pri
   1. [Philosophy](#philosophy)
   1. [Terminology](#terminology)
   1. [CSS Formatting Rules](#css-formatting-rules)
-  1. [SCSS Specifics](#scss-specifics)
+  1. [Sass Specifics](#sass-specifics)
   1. [Resources](#resources)
 
 ## General Formatting Rules
@@ -322,9 +322,24 @@ Though somewhat verbose, this syntax makes it easy to determine the child/parent
 
 **[⬆ back to TOC](#table-of-contents)**
 
-## SCSS Specifics
+## Sass Specifics
 
+- Use the `.scss` syntax, never the original `.sass` syntax.
 - **Nesting.** As a rule of thumb, avoid unnecessary nesting in SCSS. Just because you can nest, doesn't mean you always should. Consider nesting only if you must scope styles to a parent and if there are multiple elements to be nested. At most, aim for three levels.
+
+  ```css
+  .page-container {
+    .content {
+      .card {
+        // STOP HERE
+      }
+    }
+  }
+  ```
+
+- **Variables.** Prefer dash-cased variable names (e.g. `$my-variable`) over camelCased or snake_cased variable names. It is acceptable to prefix variable names that are intended to be used only within the same file with an underscore (e.g. `$_my-variable`).
+- **Mixins.** Mixins should be used to DRY up your code, add clarity, or abstract complexity -- in much the same way as well-named functions. Mixins that accept no arguments can be useful for this, but note that if you are not compressing your payload (e.g. gzip), this may contribute to unnecessary code duplication in the resulting styles.
+- **Extend.** `@extend` directives [should be avoided](http://csswizardry.com/2014/01/extending-silent-classes-in-sass) because it has unintuitive and potentially dangerous behavior, especially when used with nested selectors. Even extending top-level placeholder selectors can cause problems if the order of selectors ends up changing later (e.g. if they are in other files and the order the files are loaded shifts).
 - **Operators.** For improved readability, wrap all math operations in parentheses with a single space between values, variables, and operators.
 
   ```css
