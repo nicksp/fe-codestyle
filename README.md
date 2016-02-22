@@ -2,6 +2,8 @@
 
 Finally decided it's time to make an agreement on how I write front-end code.
 
+  > Every line of code should appear to be written by a single person, no matter the number of contributors.
+
 ## List of Style Guides
 
 * [JavaScript](javascript.md)
