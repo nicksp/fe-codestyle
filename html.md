@@ -14,7 +14,7 @@ A set of best practices and guidelines for writing HTML. It aims at improving co
 ## General Formatting Rules
 
 - **Use soft-tabs** with a 2 space indent. Spaces are the only way to guarantee code renders the same in any person’s environment.
-- **Use only lowercase.** All code has to be lowercase. This applies to HTML element names, attributes, attribute values (unless text/CDATA), CSS selectors, properties, and property values (with the exception of strings).
+- **Use only lowercase.** All code has to be lowercase. This applies to HTML element names, attributes, and attribute values (unless text/CDATA).
 
   ```html
   <!-- Not recommended -->
@@ -33,7 +33,7 @@ A set of best practices and guidelines for writing HTML. It aims at improving co
   <!-- Recommended -->
   <p>Yes please.</p>
   ```
-- **Use UTF-8 (without BOM).** Make sure your editor uses UTF-8 as character encoding, without a byte order mark. Specify the encoding in HTML templates and documents via `<meta charset="utf-8">`. Do not specify the encoding of style sheets as these assume UTF-8.
+- **Use UTF-8 (without BOM).** Make sure your editor uses UTF-8 as character encoding, without a byte order mark. Specify the encoding in HTML templates and documents via `<meta charset="utf-8">`.
 - **Omit the protocol from embedded resources.** Omit the protocol portion (http:, https:) from URLs pointing to images and other media files, style sheets, and scripts.
 
   ```html
