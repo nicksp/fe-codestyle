@@ -22,6 +22,4 @@ List of packages that help check code style in your project and enforce suggeste
 
 ## License
 
-(The MIT License)
-
-Copyright (c) 2016 Nick S. Plekhanov
+The [MIT](LICENSE) License
