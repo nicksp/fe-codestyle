@@ -1,2070 +1,1108 @@
-# A Reasonable JavaScript Style Guide
+# JavaScript Style Guide
 
-I tend to describe it as a clear, concise and predictable approach.
+I tend to describe it as a clear, concise and predictable approach to writing my own JavaScript code.
 
 ## Table of Contents
 
-  1. [Types](#types)
-  1. [References](#references)
-  1. [Objects](#objects)
-  1. [Arrays](#arrays)
-  1. [Destructuring](#destructuring)
-  1. [Strings](#strings)
-  1. [Functions](#functions)
-  1. [Arrow Functions](#arrow-functions)
-  1. [Constructors](#constructors)
-  1. [Modules](#modules)
-  1. [Iterators and Generators](#iterators-and-generators)
-  1. [Properties](#properties)
-  1. [Variables](#variables)
-  1. [Hoisting](#hoisting)
-  1. [Comparison Operators & Equality](#comparison-operators--equality)
-  1. [Blocks](#blocks)
-  1. [Comments](#comments)
-  1. [Whitespace](#whitespace)
-  1. [Commas](#commas)
+  1. [General Formatting](#general-formatting)
+  1. [Strict Mode](#strict-mode)
   1. [Semicolons](#semicolons)
-  1. [Type Casting & Coercion](#type-casting--coercion)
-  1. [Naming Conventions](#naming-conventions)
-  1. [Accessors](#accessors)
+  1. [Commas](#commas)
+  1. [Naming](#naming)
+  1. [Variable Declaration](#variable-declaration)
+  1. [Literals](#literals)
+      - [Objects](#objects)
+      - [Arrays](#arrays)
+      - [Strings](#strings)
+  1. [Functions](#functions)
+  1. [Keywords](#keywords)
+  1. [Block Statements](#block-statements)
+  1. [Conditional Statements](#conditional-statements)
+      - [if](#if)
+      - [switch](#switch)
+  1. [Loops](#loops)
+      - [for](#for)
+      - [for..in)](#for--in)
+  1. [Operators](#operators)
+      - [with](#with)
+      - [Comparison Operators](#comparison-operators)
+      - [Ternary Operator](#ternary-operator)
+      - [Unary Operators](#unary-operators)
+  1. [eval](#eval)
+  1. [undefined](#undefined)
+  1. [Parentheses](#parentheses)
+  1. [Exceptions](#exceptions)
+  1. [Type Casting](#type-casting)
+  1. [Multi-Line Statements](#multi-line-statements)
+  1. [Method Chaining](#method-chaining)
+  1. [String Concatenation](#string-concatenation)
+  1. [Empty Lines](#empty-lines)
+  1. [Function Context](#function-context)
+  1. [Comments](#comments)
+  1. [Classes](#classes)
+  1. [Enums](#enums)
   1. [Events](#events)
   1. [jQuery](#jquery)
-  1. [ECMAScript 5 Compatibility](#ecmascript-5-compatibility)
-  1. [ECMAScript 6 Styles](#ecmascript-6-styles)
   1. [Testing](#testing)
   1. [Performance](#performance)
   1. [Resources](#resources)
 
+## General Formatting
 
-## Types
+- Files should be encoded in UTF-8 without [BOM](http://en.wikipedia.org/wiki/Byte-order_mark).
+- Use UNIX-like line-break character `LF` - `\n`.
+- Files should end with a `LF` character.
+- One level of indentation is achieved with 2 spaces. Spaces are the only way to guarantee code renders the same in any person’s environment and improve readability. Always be consistent in your use of whitespace. Never mix them with tabs.
+- Clean up any trailing whitespace at the end of lines in your JS files before committing. Trailing whitespace is unnecessary and can complicate diffs.
 
-  - [1.1](#1.1) <a name='1.1'></a> **Primitives**: When you access a primitive type you work directly on its value.
+  ***Pro tip:*** use an [EditorConfig](http://editorconfig.org/) file (or equivalent) to help maintain the basic whitespace conventions that have been agreed for your code-base. For an example, see [the one in my Redux boilerplate](https://github.com/nicksp/redux-webpack-es6-boilerplate/blob/extended/.editorconfig).
 
-    + `string`
-    + `number`
-    + `boolean`
-    + `null`
-    + `undefined`
+- Lines should be no longer than 120 characters.
 
-    ```javascript
-    const foo = 1;
-    let bar = foo;
+**[⬆ back to TOC](#table-of-contents)**
 
-    bar = 9;
+## Strict Mode
 
-    console.log(foo, bar); // => 1, 9
-    ```
-  - [1.2](#1.2) <a name='1.2'></a> **Complex**: When you access a complex type you work on a reference to its value.
+- The first line of every file should be `'use strict';`. If the file contains a shebang, strict mode should be enabled on the second line.
+- The strict mode directive should be followed by a blank line.
 
-    + `object`
-    + `array`
-    + `function`
+  ```js
+  // Bad
+  'use strict';
+  console.log('even when not required')
 
-    ```javascript
-    const foo = [1, 2];
-    const bar = foo;
+  // Good
 
-    bar[0] = 9;
+  // 1
+  'use strict';
 
-    console.log(foo[0], bar[0]); // => 9, 9
-    ```
+  console.log('even when not required');
 
-**[⬆ back to top](#table-of-contents)**
+  // 2
+  #!/usr/bin/env node
+  'use strict';
 
-## References
-
-  - [2.1](#2.1) <a name='2.1'></a> Use `const` for all of your references; avoid using `var`.
-
-  > Why? This ensures that you can't reassign your references (mutation), which can lead to bugs and difficult to comprehend code.
-
-    ```javascript
-    // bad
-    var a = 1;
-    var b = 2;
-
-    // good
-    const a = 1;
-    const b = 2;
-    ```
-
-  - [2.2](#2.2) <a name='2.2'></a> If you must mutate references, use `let` instead of `var`.
-
-  > Why? `let` is block-scoped rather than function-scoped like `var`.
-
-    ```javascript
-    // bad
-    var count = 1;
-    if (true) {
-      count += 1;
-    }
-
-    // good, use the let.
-    let count = 1;
-    if (true) {
-      count += 1;
-    }
-    ```
-
-  - [2.3](#2.3) <a name='2.3'></a> Note that both `let` and `const` are block-scoped.
-
-    ```javascript
-    // const and let only exist in the blocks they are defined in.
-    {
-      let a = 1;
-      const b = 1;
-    }
-    console.log(a); // ReferenceError
-    console.log(b); // ReferenceError
-    ```
-
-**[⬆ back to top](#table-of-contents)**
-
-## Objects
-
-  - [3.1](#3.1) <a name='3.1'></a> Use the literal syntax for object creation.
-
-    ```javascript
-    // bad
-    const item = new Object();
-
-    // good
-    const item = {};
-    ```
-
-  - [3.2](#3.2) <a name='3.2'></a> If your code will be executed in browsers in script context, don't use [reserved words](http://es5.github.io/#x7.6.1) as keys. It won't work in IE8. It’s OK to use them in ES6 modules and server-side code.
-
-    ```javascript
-    // bad
-    const superman = {
-      default: { clark: 'kent' },
-      private: true,
-    };
-
-    // good
-    const superman = {
-      defaults: { clark: 'kent' },
-      hidden: true,
-    };
-    ```
-
-  - [3.3](#3.3) <a name='3.3'></a> Use readable synonyms in place of reserved words.
-
-    ```javascript
-    // bad
-    const superman = {
-      class: 'alien',
-    };
-
-    // bad
-    const superman = {
-      klass: 'alien',
-    };
-
-    // good
-    const superman = {
-      type: 'alien',
-    };
-    ```
-
-  <a name="es6-computed-properties"></a>
-  - [3.4](#3.4) <a name='3.4'></a> Use computed property names when creating objects with dynamic property names.
-
-  > Why? They allow you to define all the properties of an object in one place.
-
-    ```javascript
-
-    function getKey(k) {
-      return `a key named ${k}`;
-    }
-
-    // bad
-    const obj = {
-      id: 5,
-      name: 'San Francisco',
-    };
-    obj[getKey('enabled')] = true;
-
-    // good
-    const obj = {
-      id: 5,
-      name: 'San Francisco',
-      [getKey('enabled')]: true,
-    };
-    ```
-
-  <a name="es6-object-shorthand"></a>
-  - [3.5](#3.5) <a name='3.5'></a> Use object method shorthand.
-
-    ```javascript
-    // bad
-    const atom = {
-      value: 1,
-
-      addValue: function (value) {
-        return atom.value + value;
-      },
-    };
-
-    // good
-    const atom = {
-      value: 1,
-
-      addValue(value) {
-        return atom.value + value;
-      },
-    };
-    ```
-
-  <a name="es6-object-concise"></a>
-  - [3.6](#3.6) <a name='3.6'></a> Use property value shorthand.
-
-  > Why? It is shorter to write and descriptive.
-
-    ```javascript
-    const lukeSkywalker = 'Luke Skywalker';
-
-    // bad
-    const obj = {
-      lukeSkywalker: lukeSkywalker,
-    };
-
-    // good
-    const obj = {
-      lukeSkywalker,
-    };
-    ```
-
-  - [3.7](#3.7) <a name='3.7'></a> Group your shorthand properties at the beginning of your object declaration.
-
-  > Why? It's easier to tell which properties are using the shorthand.
-
-    ```javascript
-    const anakinSkywalker = 'Anakin Skywalker';
-    const lukeSkywalker = 'Luke Skywalker';
-
-    // bad
-    const obj = {
-      episodeOne: 1,
-      twoJediWalkIntoACantina: 2,
-      lukeSkywalker,
-      episodeThree: 3,
-      mayTheFourth: 4,
-      anakinSkywalker,
-    };
-
-    // good
-    const obj = {
-      lukeSkywalker,
-      anakinSkywalker,
-      episodeOne: 1,
-      twoJediWalkIntoACantina: 2,
-      episodeThree: 3,
-      mayTheFourth: 4,
-    };
-    ```
-
-**[⬆ back to top](#table-of-contents)**
-
-## Arrays
-
-  - [4.1](#4.1) <a name='4.1'></a> Use the literal syntax for array creation.
-
-    ```javascript
-    // bad
-    const items = new Array();
-
-    // good
-    const items = [];
-    ```
-
-  - [4.2](#4.2) <a name='4.2'></a> Use Array#push instead of direct assignment to add items to an array.
-
-    ```javascript
-    const someStack = [];
-
-    // bad
-    someStack[someStack.length] = 'abracadabra';
-
-    // good
-    someStack.push('abracadabra');
-    ```
-
-  <a name="es6-array-spreads"></a>
-  - [4.3](#4.3) <a name='4.3'></a> Use array spreads `...` to copy arrays.
-
-    ```javascript
-    // bad
-    const len = items.length;
-    const itemsCopy = [];
-    let i;
-
-    for (i = 0; i < len; i++) {
-      itemsCopy[i] = items[i];
-    }
-
-    // good
-    const itemsCopy = [...items];
-    ```
-  - [4.4](#4.4) <a name='4.4'></a> To convert an array-like object to an array, use Array#from.
-
-    ```javascript
-    const foo = document.querySelectorAll('.foo');
-    const nodes = Array.from(foo);
-    ```
-
-**[⬆ back to top](#table-of-contents)**
-
-## Destructuring
-
-  - [5.1](#5.1) <a name='5.1'></a> Use object destructuring when accessing and using multiple properties of an object.
-
-  > Why? Destructuring saves you from creating temporary references for those properties.
-
-    ```javascript
-    // bad
-    function getFullName(user) {
-      const firstName = user.firstName;
-      const lastName = user.lastName;
-
-      return `${firstName} ${lastName}`;
-    }
-
-    // good
-    function getFullName(obj) {
-      const { firstName, lastName } = obj;
-      return `${firstName} ${lastName}`;
-    }
-
-    // best
-    function getFullName({ firstName, lastName }) {
-      return `${firstName} ${lastName}`;
-    }
-    ```
-
-  - [5.2](#5.2) <a name='5.2'></a> Use array destructuring.
-
-    ```javascript
-    const arr = [1, 2, 3, 4];
-
-    // bad
-    const first = arr[0];
-    const second = arr[1];
-
-    // good
-    const [first, second] = arr;
-    ```
-
-  - [5.3](#5.3) <a name='5.3'></a> Use object destructuring for multiple return values, not array destructuring.
-
-  > Why? You can add new properties over time or change the order of things without breaking call sites.
-
-    ```javascript
-    // bad
-    function processInput(input) {
-      // then a miracle occurs
-      return [left, right, top, bottom];
-    }
-
-    // the caller needs to think about the order of return data
-    const [left, __, top] = processInput(input);
-
-    // good
-    function processInput(input) {
-      // then a miracle occurs
-      return { left, right, top, bottom };
-    }
-
-    // the caller selects only the data they need
-    const { left, right } = processInput(input);
-    ```
-
-
-**[⬆ back to top](#table-of-contents)**
-
-## Strings
-
-  - [6.1](#6.1) <a name='6.1'></a> Use single quotes `''` for strings.
-
-    ```javascript
-    // bad
-    const name = "Capt. Janeway";
-
-    // good
-    const name = 'Capt. Janeway';
-    ```
-
-  - [6.2](#6.2) <a name='6.2'></a> Strings longer than 100 characters should be written across multiple lines using string concatenation.
-  - [6.3](#6.3) <a name='6.3'></a> Note: If overused, long strings with concatenation could impact performance. [jsPerf](http://jsperf.com/ya-string-concat) & [Discussion](https://github.com/airbnb/javascript/issues/40).
-
-    ```javascript
-    // bad
-    const errorMessage = 'This is a super long error that was thrown because of Batman. When you stop to think about how Batman had anything to do with this, you would get nowhere fast.';
-
-    // bad
-    const errorMessage = 'This is a super long error that was thrown because \
-    of Batman. When you stop to think about how Batman had anything to do \
-    with this, you would get nowhere \
-    fast.';
-
-    // good
-    const errorMessage = 'This is a super long error that was thrown because ' +
-      'of Batman. When you stop to think about how Batman had anything to do ' +
-      'with this, you would get nowhere fast.';
-    ```
-
-  <a name="es6-template-literals"></a>
-  - [6.4](#6.4) <a name='6.4'></a> When programmatically building up strings, use template strings instead of concatenation.
-
-  > Why? Template strings give you a readable, concise syntax with proper newlines and string interpolation features.
-
-    ```javascript
-    // bad
-    function sayHi(name) {
-      return 'How are you, ' + name + '?';
-    }
-
-    // bad
-    function sayHi(name) {
-      return ['How are you, ', name, '?'].join();
-    }
-
-    // good
-    function sayHi(name) {
-      return `How are you, ${name}?`;
-    }
-    ```
-  - [6.5](#6.5) <a name='6.5'></a> Never use eval() on a string, it opens too many vulnerabilities.
-
-**[⬆ back to top](#table-of-contents)**
-
-
-## Functions
-
-  - [7.1](#7.1) <a name='7.1'></a> Use function declarations instead of function expressions.
-
-  > Why? Function declarations are named, so they're easier to identify in call stacks. Also, the whole body of a function declaration is hoisted, whereas only the reference of a function expression is hoisted. This rule makes it possible to always use [Arrow Functions](#arrow-functions) in place of function expressions.
-
-    ```javascript
-    // bad
-    const foo = function () {
-    };
-
-    // good
-    function foo() {
-    }
-    ```
-
-  - [7.2](#7.2) <a name='7.2'></a> Function expressions:
-
-    ```javascript
-    // immediately-invoked function expression (IIFE)
-    (() => {
-      console.log('Welcome to the Internet. Please follow me.');
-    })();
-    ```
-
-  - [7.3](#7.3) <a name='7.3'></a> Never declare a function in a non-function block (if, while, etc). Assign the function to a variable instead. Browsers will allow you to do it, but they all interpret it differently, which is bad news bears.
-  - [7.4](#7.4) <a name='7.4'></a> **Note:** ECMA-262 defines a `block` as a list of statements. A function declaration is not a statement. [Read ECMA-262's note on this issue](http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-262.pdf#page=97).
-
-    ```javascript
-    // bad
-    if (currentUser) {
-      function test() {
-        console.log('Nope.');
-      }
-    }
-
-    // good
-    let test;
-    if (currentUser) {
-      test = () => {
-        console.log('Yup.');
-      };
-    }
-    ```
-
-  - [7.5](#7.5) <a name='7.5'></a> Never name a parameter `arguments`. This will take precedence over the `arguments` object that is given to every function scope.
-
-    ```javascript
-    // bad
-    function nope(name, options, arguments) {
-      // ...stuff...
-    }
-
-    // good
-    function yup(name, options, args) {
-      // ...stuff...
-    }
-    ```
-
-  <a name="es6-rest"></a>
-  - [7.6](#7.6) <a name='7.6'></a> Never use `arguments`, opt to use rest syntax `...` instead.
-
-  > Why? `...` is explicit about which arguments you want pulled. Plus rest arguments are a real Array and not Array-like like `arguments`.
-
-    ```javascript
-    // bad
-    function concatenateAll() {
-      const args = Array.prototype.slice.call(arguments);
-      return args.join('');
-    }
-
-    // good
-    function concatenateAll(...args) {
-      return args.join('');
-    }
-    ```
-
-  <a name="es6-default-parameters"></a>
-  - [7.7](#7.7) <a name='7.7'></a> Use default parameter syntax rather than mutating function arguments.
-
-    ```javascript
-    // really bad
-    function handleThings(opts) {
-      // No! We shouldn't mutate function arguments.
-      // Double bad: if opts is falsy it'll be set to an object which may
-      // be what you want but it can introduce subtle bugs.
-      opts = opts || {};
-      // ...
-    }
-
-    // still bad
-    function handleThings(opts) {
-      if (opts === void 0) {
-        opts = {};
-      }
-      // ...
-    }
-
-    // good
-    function handleThings(opts = {}) {
-      // ...
-    }
-    ```
-
-  - [7.8](#7.8) <a name='7.8'></a> Avoid side effects with default parameters.
-
-  > Why? They are confusing to reason about.
-
-  ```javascript
-  var b = 1;
-  // bad
-  function count(a = b++) {
-    console.log(a);
-  }
-  count();  // 1
-  count();  // 2
-  count(3); // 3
-  count();  // 3
+  // Code goes here
   ```
 
-  - [7.9](#7.9) <a name='7.9'></a> Always put default parameters last.
-
-    ```javascript
-    // bad
-    function handleThings(opts = {}, name) {
-      // ...
-    }
-
-    // good
-    function handleThings(name, opts = {}) {
-      // ...
-    }
-    ```
-
-- [7.10](#7.10) <a name='7.10'></a> Never use the Function constructor to create a new function.
-
-  > Why? Creating a function in this way evaluates a string similarly to eval(), which opens vulnerabilities.
-
-  ```javascript
-  // bad
-  var add = new Function('a', 'b', 'return a + b');
-
-  // still bad
-  var subtract = Function('a', 'b', 'return a - b');
-  ```
-
-**[⬆ back to top](#table-of-contents)**
-
-## Arrow Functions
-
-  - [8.1](#8.1) <a name='8.1'></a> When you must use function expressions (as when passing an anonymous function), use arrow function notation.
-
-  > Why? It creates a version of the function that executes in the context of `this`, which is usually what you want, and is a more concise syntax.
-
-  > Why not? If you have a fairly complicated function, you might move that logic out into its own function declaration.
-
-    ```javascript
-    // bad
-    [1, 2, 3].map(function (x) {
-      const y = x + 1;
-      return x * y;
-    });
-
-    // good
-    [1, 2, 3].map((x) => {
-      const y = x + 1;
-      return x * y;
-    });
-    ```
-
-  - [8.2](#8.2) <a name='8.2'></a> If the function body consists of a single expression, feel free to omit the braces and use the implicit return. Otherwise use a `return` statement.
-
-  > Why? Syntactic sugar. It reads well when multiple functions are chained together.
-
-  > Why not? If you plan on returning an object.
-
-    ```javascript
-    // good
-    [1, 2, 3].map(number => `A string containing the ${number}.`);
-
-    // bad
-    [1, 2, 3].map(number => {
-      const nextNumber = number + 1;
-      `A string containing the ${nextNumber}.`;
-    });
-
-    // good
-    [1, 2, 3].map(number => {
-      const nextNumber = number + 1;
-      return `A string containing the ${nextNumber}.`;
-    });
-    ```
-
-  - [8.3](#8.3) <a name='8.3'></a> In case the expression spans over multiple lines, wrap it in parentheses for better readability.
-
-  > Why? It shows clearly where the function starts and ends.
-
-    ```js
-    // bad
-    [1, 2, 3].map(number => 'As time went by, the string containing the ' +
-      `${number} became much longer. So we needed to break it over multiple ` +
-      'lines.'
-    );
-
-    // good
-    [1, 2, 3].map(number => (
-      `As time went by, the string containing the ${number} became much ` +
-      'longer. So we needed to break it over multiple lines.'
-    ));
-    ```
-
-
-  - [8.4](#8.4) <a name='8.4'></a> If your function only takes a single argument, feel free to omit the parentheses.
-
-  > Why? Less visual clutter.
-
-    ```js
-    // good
-    [1, 2, 3].map(x => x * x);
-
-    // good
-    [1, 2, 3].reduce((y, x) => x + y);
-    ```
-
-**[⬆ back to top](#table-of-contents)**
-
-
-## Constructors
-
-  - [9.1](#9.1) <a name='9.1'></a> Always use `class`. Avoid manipulating `prototype` directly.
-
-  > Why? `class` syntax is more concise and easier to reason about.
-
-    ```javascript
-    // bad
-    function Queue(contents = []) {
-      this._queue = [...contents];
-    }
-    Queue.prototype.pop = function() {
-      const value = this._queue[0];
-      this._queue.splice(0, 1);
-      return value;
-    }
-
-
-    // good
-    class Queue {
-      constructor(contents = []) {
-        this._queue = [...contents];
-      }
-      pop() {
-        const value = this._queue[0];
-        this._queue.splice(0, 1);
-        return value;
-      }
-    }
-    ```
-
-  - [9.2](#9.2) <a name='9.2'></a> Use `extends` for inheritance.
-
-  > Why? It is a built-in way to inherit prototype functionality without breaking `instanceof`.
-
-    ```javascript
-    // bad
-    const inherits = require('inherits');
-    function PeekableQueue(contents) {
-      Queue.apply(this, contents);
-    }
-    inherits(PeekableQueue, Queue);
-    PeekableQueue.prototype.peek = function() {
-      return this._queue[0];
-    }
-
-    // good
-    class PeekableQueue extends Queue {
-      peek() {
-        return this._queue[0];
-      }
-    }
-    ```
-
-  - [9.3](#9.3) <a name='9.3'></a> Methods can return `this` to help with method chaining.
-
-    ```javascript
-    // bad
-    Jedi.prototype.jump = function() {
-      this.jumping = true;
-      return true;
-    };
-
-    Jedi.prototype.setHeight = function(height) {
-      this.height = height;
-    };
-
-    const luke = new Jedi();
-    luke.jump(); // => true
-    luke.setHeight(20); // => undefined
-
-    // good
-    class Jedi {
-      jump() {
-        this.jumping = true;
-        return this;
-      }
-
-      setHeight(height) {
-        this.height = height;
-        return this;
-      }
-    }
-
-    const luke = new Jedi();
-
-    luke.jump()
-      .setHeight(20);
-    ```
-
-
-  - [9.4](#9.4) <a name='9.4'></a> It's okay to write a custom toString() method, just make sure it works successfully and causes no side effects.
-
-    ```javascript
-    class Jedi {
-      constructor(options = {}) {
-        this.name = options.name || 'no name';
-      }
-
-      getName() {
-        return this.name;
-      }
-
-      toString() {
-        return `Jedi - ${this.getName()}`;
-      }
-    }
-    ```
-
-**[⬆ back to top](#table-of-contents)**
-
-
-## Modules
-
-  - [10.1](#10.1) <a name='10.1'></a> Always use modules (`import`/`export`) over a non-standard module system. You can always transpile to your preferred module system.
-
-  > Why? Modules are the future, let's start using the future now.
-
-    ```javascript
-    // bad
-    const PersonalStyleGuide = require('./PersonalStyleGuide');
-    module.exports = PersonalStyleGuide.es6;
-
-    // ok
-    import PersonalStyleGuide from './PersonalStyleGuide';
-    export default PersonalStyleGuide.es6;
-
-    // best
-    import { es6 } from './PersonalStyleGuide';
-    export default es6;
-    ```
-
-  - [10.2](#10.2) <a name='10.2'></a> Do not use wildcard imports.
-
-  > Why? This makes sure you have a single default export.
-
-    ```javascript
-    // bad
-    import * as PersonalStyleGuide from './PersonalStyleGuide';
-
-    // good
-    import PersonalStyleGuide from './PersonalStyleGuide';
-    ```
-
-  - [10.3](#10.3) <a name='10.3'></a>And do not export directly from an import.
-
-  > Why? Although the one-liner is concise, having one clear way to import and one clear way to export makes things consistent.
-
-    ```javascript
-    // bad
-    // filename es6.js
-    export { es6 as default } from './personalStyleGuide';
-
-    // good
-    // filename es6.js
-    import { es6 } from './PersonalStyleGuide';
-    export default es6;
-    ```
-
-**[⬆ back to top](#table-of-contents)**
-
-## Iterators and Generators
-
-  - [11.1](#11.1) <a name='11.1'></a> Don't use iterators. Prefer JavaScript's higher-order functions like `map()` and `reduce()` instead of loops like `for-of`.
-
-  > Why? This enforces our immutable rule. Dealing with pure functions that return values is easier to reason about than side-effects.
-
-    ```javascript
-    const numbers = [1, 2, 3, 4, 5];
-
-    // bad
-    let sum = 0;
-    for (let num of numbers) {
-      sum += num;
-    }
-
-    sum === 15;
-
-    // good
-    let sum = 0;
-    numbers.forEach((num) => sum += num);
-    sum === 15;
-
-    // best (use the functional force)
-    const sum = numbers.reduce((total, num) => total + num, 0);
-    sum === 15;
-    ```
-
-  - [11.2](#11.2) <a name='11.2'></a> Don't use generators for now.
-
-  > Why? They don't transpile well to ES5.
-
-**[⬆ back to top](#table-of-contents)**
-
-
-## Properties
-
-  - [12.1](#12.1) <a name='12.1'></a> Use dot notation when accessing properties.
-
-    ```javascript
-    const luke = {
-      jedi: true,
-      age: 28,
-    };
-
-    // bad
-    const isJedi = luke['jedi'];
-
-    // good
-    const isJedi = luke.jedi;
-    ```
-
-  - [12.2](#12.2) <a name='12.2'></a> Use subscript notation `[]` when accessing properties with a variable.
-
-    ```javascript
-    const luke = {
-      jedi: true,
-      age: 28,
-    };
-
-    function getProp(prop) {
-      return luke[prop];
-    }
-
-    const isJedi = getProp('jedi');
-    ```
-
-**[⬆ back to top](#table-of-contents)**
-
-
-## Variables
-
-  - [13.1](#13.1) <a name='13.1'></a> Always use `const` to declare variables. Not doing so will result in global variables. We want to avoid polluting the global namespace. Captain Planet warned us of that.
-
-    ```javascript
-    // bad
-    superPower = new SuperPower();
-
-    // good
-    const superPower = new SuperPower();
-    ```
-
-  - [13.2](#13.2) <a name='13.2'></a> Use one `const` declaration per variable.
-
-    > Why? It's easier to add new variable declarations this way, and you never have to worry about swapping out a `;` for a `,` or introducing punctuation-only diffs.
-
-    ```javascript
-    // bad
-    const items = getItems(),
-        goSportsTeam = true,
-        dragonball = 'z';
-
-    // bad
-    // (compare to above, and try to spot the mistake)
-    const items = getItems(),
-        goSportsTeam = true;
-        dragonball = 'z';
-
-    // good
-    const items = getItems();
-    const goSportsTeam = true;
-    const dragonball = 'z';
-    ```
-
-  - [13.3](#13.3) <a name='13.3'></a> Group all your `const`s and then group all your `let`s.
-
-  > Why? This is helpful when later on you might need to assign a variable depending on one of the previous assigned variables.
-
-    ```javascript
-    // bad
-    let i, len, dragonball,
-        items = getItems(),
-        goSportsTeam = true;
-
-    // bad
-    let i;
-    const items = getItems();
-    let dragonball;
-    const goSportsTeam = true;
-    let len;
-
-    // good
-    const goSportsTeam = true;
-    const items = getItems();
-    let dragonball;
-    let i;
-    let length;
-    ```
-
-  - [13.4](#13.4) <a name='13.4'></a> Assign variables where you need them, but place them in a reasonable place.
-
-  > Why? `let` and `const` are block scoped and not function scoped.
-
-    ```javascript
-    // good
-    function() {
-      test();
-      console.log('doing stuff..');
-
-      //..other stuff..
-
-      const name = getName();
-
-      if (name === 'test') {
-        return false;
-      }
-
-      return name;
-    }
-
-    // bad - unnecessary function call
-    function(hasName) {
-      const name = getName();
-
-      if (!hasName) {
-        return false;
-      }
-
-      this.setFirstName(name);
-
-      return true;
-    }
-
-    // good
-    function(hasName) {
-      if (!hasName) {
-        return false;
-      }
-
-      const name = getName();
-      this.setFirstName(name);
-
-      return true;
-    }
-    ```
-
-**[⬆ back to top](#table-of-contents)**
-
-
-## Hoisting
-
-  - [14.1](#14.1) <a name='14.1'></a> `var` declarations get hoisted to the top of their scope, their assignment does not. `const` and `let` declarations are blessed with a new concept called [Temporal Dead Zones (TDZ)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let#Temporal_dead_zone_and_errors_with_let). It's important to know why [typeof is no longer safe](http://es-discourse.com/t/why-typeof-is-no-longer-safe/15).
-
-    ```javascript
-    // we know this wouldn't work (assuming there
-    // is no notDefined global variable)
-    function example() {
-      console.log(notDefined); // => throws a ReferenceError
-    }
-
-    // creating a variable declaration after you
-    // reference the variable will work due to
-    // variable hoisting. Note: the assignment
-    // value of `true` is not hoisted.
-    function example() {
-      console.log(declaredButNotAssigned); // => undefined
-      var declaredButNotAssigned = true;
-    }
-
-    // The interpreter is hoisting the variable
-    // declaration to the top of the scope,
-    // which means our example could be rewritten as:
-    function example() {
-      let declaredButNotAssigned;
-      console.log(declaredButNotAssigned); // => undefined
-      declaredButNotAssigned = true;
-    }
-
-    // using const and let
-    function example() {
-      console.log(declaredButNotAssigned); // => throws a ReferenceError
-      console.log(typeof declaredButNotAssigned); // => throws a ReferenceError
-      const declaredButNotAssigned = true;
-    }
-    ```
-
-  - [14.2](#14.2) <a name='14.2'></a> Anonymous function expressions hoist their variable name, but not the function assignment.
-
-    ```javascript
-    function example() {
-      console.log(anonymous); // => undefined
-
-      anonymous(); // => TypeError anonymous is not a function
-
-      var anonymous = function() {
-        console.log('anonymous function expression');
-      };
-    }
-    ```
-
-  - [14.3](#14.3) <a name='14.3'></a> Named function expressions hoist the variable name, not the function name or the function body.
-
-    ```javascript
-    function example() {
-      console.log(named); // => undefined
-
-      named(); // => TypeError named is not a function
-
-      superPower(); // => ReferenceError superPower is not defined
-
-      var named = function superPower() {
-        console.log('Flying');
-      };
-    }
-
-    // the same is true when the function name
-    // is the same as the variable name.
-    function example() {
-      console.log(named); // => undefined
-
-      named(); // => TypeError named is not a function
-
-      var named = function named() {
-        console.log('named');
-      }
-    }
-    ```
-
-  - [14.4](#14.4) <a name='14.4'></a> Function declarations hoist their name and the function body.
-
-    ```javascript
-    function example() {
-      superPower(); // => Flying
-
-      function superPower() {
-        console.log('Flying');
-      }
-    }
-    ```
-
-  - For more information refer to [JavaScript Scoping & Hoisting](http://www.adequatelygood.com/2010/2/JavaScript-Scoping-and-Hoisting) by [Ben Cherry](http://www.adequatelygood.com/).
-
-**[⬆ back to top](#table-of-contents)**
-
-
-## Comparison Operators & Equality
-
-  - [15.1](#15.1) <a name='15.1'></a> Use `===` and `!==` over `==` and `!=`.
-  - [15.2](#15.2) <a name='15.2'></a> Conditional statements such as the `if` statement evaluate their expression using coercion with the `ToBoolean` abstract method and always follow these simple rules:
-
-    + **Objects** evaluate to **true**
-    + **Undefined** evaluates to **false**
-    + **Null** evaluates to **false**
-    + **Booleans** evaluate to **the value of the boolean**
-    + **Numbers** evaluate to **false** if **+0, -0, or NaN**, otherwise **true**
-    + **Strings** evaluate to **false** if an empty string `''`, otherwise **true**
-
-    ```javascript
-    if ([0]) {
-      // true
-      // An array is an object, objects evaluate to true
-    }
-    ```
-
-  - [15.3](#15.3) <a name='15.3'></a> Use shortcuts.
-
-    ```javascript
-    // bad
-    if (name !== '') {
-      // ...stuff...
-    }
-
-    // good
-    if (name) {
-      // ...stuff...
-    }
-
-    // bad
-    if (collection.length > 0) {
-      // ...stuff...
-    }
-
-    // good
-    if (collection.length) {
-      // ...stuff...
-    }
-    ```
-
-  - [15.4](#15.4) <a name='15.4'></a> For more information see [Truth Equality and JavaScript](http://javascriptweblog.wordpress.com/2011/02/07/truth-equality-and-javascript/#more-2108) by Angus Croll.
-
-**[⬆ back to top](#table-of-contents)**
-
-
-## Blocks
-
-  - [16.1](#16.1) <a name='16.1'></a> Use braces with all multi-line blocks.
-
-    ```javascript
-    // bad
-    if (test)
-      return false;
-
-    // good
-    if (test) return false;
-
-    // good
-    if (test) {
-      return false;
-    }
-
-    // bad
-    function() { return false; }
-
-    // good
-    function() {
-      return false;
-    }
-    ```
-
-  - [16.2](#16.2) <a name='16.2'></a> If you're using multi-line blocks with `if` and `else`, put `else` on the same line as your
-    `if` block's closing brace.
-
-    ```javascript
-    // bad
-    if (test) {
-      thing1();
-      thing2();
-    }
-    else {
-      thing3();
-    }
-
-    // good
-    if (test) {
-      thing1();
-      thing2();
-    } else {
-      thing3();
-    }
-    ```
-
-
-**[⬆ back to top](#table-of-contents)**
-
-
-## Comments
-
-  - [17.1](#17.1) <a name='17.1'></a> Use `/** ... */` for multi-line comments. Include a description, specify types and values for all parameters and return values.
-
-    ```javascript
-    // bad
-    // make() returns a new element
-    // based on the passed in tag name
-    //
-    // @param {String} tag
-    // @return {Element} element
-    function make(tag) {
-
-      // ...stuff...
-
-      return element;
-    }
-
-    // good
-    /**
-     * make() returns a new element
-     * based on the passed in tag name
-     *
-     * @param {String} tag
-     * @return {Element} element
-     */
-    function make(tag) {
-
-      // ...stuff...
-
-      return element;
-    }
-    ```
-
-  - [17.2](#17.2) <a name='17.2'></a> Use `//` for single line comments. Place single line comments on a newline above the subject of the comment. Put an empty line before the comment.
-
-    ```javascript
-    // bad
-    const active = true;  // is current tab
-
-    // good
-    // is current tab
-    const active = true;
-
-    // bad
-    function getType() {
-      console.log('fetching type...');
-      // set the default type to 'no type'
-      const type = this._type || 'no type';
-
-      return type;
-    }
-
-    // good
-    function getType() {
-      console.log('fetching type...');
-
-      // set the default type to 'no type'
-      const type = this._type || 'no type';
-
-      return type;
-    }
-    ```
-
-  - [17.3](#17.3) <a name='17.3'></a> Prefixing your comments with `FIXME` or `TODO` helps other developers quickly understand if you're pointing out a problem that needs to be revisited, or if you're suggesting a solution to the problem that needs to be implemented. These are different than regular comments because they are actionable. The actions are `FIXME -- need to figure this out` or `TODO -- need to implement`.
-
-  - [17.4](#17.4) <a name='17.4'></a> Use `// FIXME:` to annotate problems.
-
-    ```javascript
-    class Calculator extends Abacus {
-      constructor() {
-        super();
-
-        // FIXME: shouldn't use a global here
-        total = 0;
-      }
-    }
-    ```
-
-  - [17.5](#17.5) <a name='17.5'></a> Use `// TODO:` to annotate solutions to problems.
-
-    ```javascript
-    class Calculator extends Abacus {
-      constructor() {
-        super();
-
-        // TODO: total should be configurable by an options param
-        this.total = 0;
-      }
-    }
-    ```
-
-**[⬆ back to top](#table-of-contents)**
-
-
-## Whitespace
-
-  - [18.1](#18.1) <a name='18.1'></a> Use soft tabs set to 2 spaces.
-
-    ```javascript
-    // bad
-    function() {
-    ∙∙∙∙const name;
-    }
-
-    // bad
-    function() {
-    ∙const name;
-    }
-
-    // good
-    function() {
-    ∙∙const name;
-    }
-    ```
-
-  - [18.2](#18.2) <a name='18.2'></a> Place 1 space before the leading brace.
-
-    ```javascript
-    // bad
-    function test(){
-      console.log('test');
-    }
-
-    // good
-    function test() {
-      console.log('test');
-    }
-
-    // bad
-    dog.set('attr',{
-      age: '1 year',
-      breed: 'Bernese Mountain Dog',
-    });
-
-    // good
-    dog.set('attr', {
-      age: '1 year',
-      breed: 'Bernese Mountain Dog',
-    });
-    ```
-
-  - [18.3](#18.3) <a name='18.3'></a> Place 1 space before the opening parenthesis in control statements (`if`, `while` etc.). Place no space before the argument list in function calls and declarations.
-
-    ```javascript
-    // bad
-    if(isJedi) {
-      fight ();
-    }
-
-    // good
-    if (isJedi) {
-      fight();
-    }
-
-    // bad
-    function fight () {
-      console.log ('Swooosh!');
-    }
-
-    // good
-    function fight() {
-      console.log('Swooosh!');
-    }
-    ```
-
-  - [18.4](#18.4) <a name='18.4'></a> Set off operators with spaces.
-
-    ```javascript
-    // bad
-    const x=y+5;
-
-    // good
-    const x = y + 5;
-    ```
-
-  - [18.5](#18.5) <a name='18.5'></a> End files with a single newline character.
-
-    ```javascript
-    // bad
-    (function(global) {
-      // ...stuff...
-    })(this);
-    ```
-
-    ```javascript
-    // bad
-    (function(global) {
-      // ...stuff...
-    })(this);↵
-    ↵
-    ```
-
-    ```javascript
-    // good
-    (function(global) {
-      // ...stuff...
-    })(this);↵
-    ```
-
-  - [18.6](#18.6) <a name='18.6'></a> Use indentation when making long method chains. Use a leading dot, which
-    emphasizes that the line is a method call, not a new statement.
-
-    ```javascript
-    // bad
-    $('#items').find('.selected').highlight().end().find('.open').updateCount();
-
-    // bad
-    $('#items').
-      find('.selected').
-        highlight().
-        end().
-      find('.open').
-        updateCount();
-
-    // good
-    $('#items')
-      .find('.selected')
-        .highlight()
-        .end()
-      .find('.open')
-        .updateCount();
-
-    // bad
-    const leds = stage.selectAll('.led').data(data).enter().append('svg:svg').class('led', true)
-        .attr('width', (radius + margin) * 2).append('svg:g')
-        .attr('transform', 'translate(' + (radius + margin) + ',' + (radius + margin) + ')')
-        .call(tron.led);
-
-    // good
-    const leds = stage.selectAll('.led')
-        .data(data)
-      .enter().append('svg:svg')
-        .classed('led', true)
-        .attr('width', (radius + margin) * 2)
-      .append('svg:g')
-        .attr('transform', 'translate(' + (radius + margin) + ',' + (radius + margin) + ')')
-        .call(tron.led);
-    ```
-
-  - [18.7](#18.7) <a name='18.7'></a> Leave a blank line after blocks and before the next statement.
-
-    ```javascript
-    // bad
-    if (foo) {
-      return bar;
-    }
-    return baz;
-
-    // good
-    if (foo) {
-      return bar;
-    }
-
-    return baz;
-
-    // bad
-    const obj = {
-      foo() {
-      },
-      bar() {
-      },
-    };
-    return obj;
-
-    // good
-    const obj = {
-      foo() {
-      },
-
-      bar() {
-      },
-    };
-
-    return obj;
-
-    // bad
-    const arr = [
-      function foo() {
-      },
-      function bar() {
-      },
-    ];
-    return arr;
-
-    // good
-    const arr = [
-      function foo() {
-      },
-
-      function bar() {
-      },
-    ];
-
-    return arr;
-    ```
-
-
-**[⬆ back to top](#table-of-contents)**
-
-## Commas
-
-  - [19.1](#19.1) <a name='19.1'></a> Leading commas: **Nope.**
-
-    ```javascript
-    // bad
-    const story = [
-        once
-      , upon
-      , aTime
-    ];
-
-    // good
-    const story = [
-      once,
-      upon,
-      aTime,
-    ];
-
-    // bad
-    const hero = {
-        firstName: 'Ada'
-      , lastName: 'Lovelace'
-      , birthYear: 1815
-      , superPower: 'computers'
-    };
-
-    // good
-    const hero = {
-      firstName: 'Ada',
-      lastName: 'Lovelace',
-      birthYear: 1815,
-      superPower: 'computers',
-    };
-    ```
-
-  - [19.2](#19.2) <a name='19.2'></a> Additional trailing comma: **Yup.**
-
-  > Why? This leads to cleaner git diffs. Also, transpilers like Babel will remove the additional trailing comma in the transpiled code which means you don't have to worry about the [trailing comma problem](es5/README.md#commas) in legacy browsers.
-
-    ```javascript
-    // bad - git diff without trailing comma
-    const hero = {
-         firstName: 'Florence',
-    -    lastName: 'Nightingale'
-    +    lastName: 'Nightingale',
-    +    inventorOf: ['coxcomb graph', 'modern nursing']
-    };
-
-    // good - git diff with trailing comma
-    const hero = {
-         firstName: 'Florence',
-         lastName: 'Nightingale',
-    +    inventorOf: ['coxcomb chart', 'modern nursing'],
-    };
-
-    // bad
-    const hero = {
-      firstName: 'Dana',
-      lastName: 'Scully'
-    };
-
-    const heroes = [
-      'Batman',
-      'Superman'
-    ];
-
-    // good
-    const hero = {
-      firstName: 'Dana',
-      lastName: 'Scully',
-    };
-
-    const heroes = [
-      'Batman',
-      'Superman',
-    ];
-    ```
-
-**[⬆ back to top](#table-of-contents)**
-
+**[⬆ back to TOC](#table-of-contents)**
 
 ## Semicolons
 
-  - [20.1](#20.1) <a name='20.1'></a> **Yup.**
+- Statements should always end with a semicolon `;`
 
-    ```javascript
-    // bad
-    (function() {
-      const name = 'Skywalker'
-      return name
-    })()
+  ```js
+  // Bad
+  console.log('even when not required')
 
-    // good
-    (() => {
-      const name = 'Skywalker';
-      return name;
-    })();
+  // Good
+  console.log('even when not required');
+  ```
 
-    // good (guards against the function becoming an argument when two files with IIFEs are concatenated)
-    ;(() => {
-      const name = 'Skywalker';
-      return name;
-    })();
-    ```
+**[⬆ back to TOC](#table-of-contents)**
 
-    [Read more](http://stackoverflow.com/a/7365214/1712802).
+## Commas
 
-**[⬆ back to top](#table-of-contents)**
+- Never begin a line with `,` (always at the end of the previous line).
+- No additional trailing commas. This can cause problems with IE6/7 and IE9 if it's in quirksmode.
 
+  ```js
+  // Bad
+  execute('some error message'
+    , 12345
+    , this);
 
-## Type Casting & Coercion
+  var obj = {
+      prop1: val1
+    , prop2: val2
+    , prop3: val3
+  };
 
-  - [21.1](#21.1) <a name='21.1'></a> Perform type coercion at the beginning of the statement.
-  - [21.2](#21.2) <a name='21.2'></a> Strings:
+  // Good
+  execute('some error message',
+    12345,
+    this);
 
-    ```javascript
-    //  => this.reviewScore = 9;
+  var obj = {
+    prop1: val1,
+    prop2: val2,
+    prop3: val3
+  };
+  ```
 
-    // bad
-    const totalScore = this.reviewScore + '';
+**[⬆ back to TOC](#table-of-contents)**
 
-    // good
-    const totalScore = String(this.reviewScore);
-    ```
+## Naming
 
-  - [21.3](#21.3) <a name='21.3'></a> Use `parseInt` for Numbers and always with a radix for type casting.
+- `variableNamesLikeThis`
+- `functionNamesLikeThis`
+- `functionArgumentsLikeThis`
+- `ClassNamesLikeThis`
+- `EnumNamesLikeThis`
+- `methodNamesLikeThis`
+- `CONSTANTS_LIKE_THIS`
+- `namespacesLikeThis`
+- `events-like-this`
+- `private` or `protected` properties and methods should be prefixed with a single `_` character
+- Shortened and abbreviated names should be avoided.
+- Common abbreviations, such as `JSON` and `XML` are written in `CamelCase`. For example: `Json`, `Xml`, etc.
 
-    ```javascript
-    const inputValue = '4';
+**[⬆ back to TOC](#table-of-contents)**
 
-    // bad
-    const val = new Number(inputValue);
+## Variable Declaration
 
-    // bad
-    const val = +inputValue;
+- Each variable should be declared:
+  * using a `var` statement (ES5);
+  * using `let` and `const` (ES6);
+  * only once in the current scope;
+  * on a new line;
+  * as close as possible to the place where it's first used.
 
-    // bad
-    const val = inputValue >> 0;
+- Give descriptive names:
+  * `for...in`, `for...of` iterators should use descriptive names;
+  * `for` iterators should use single character names;
+  * Use combination of plural for array and singular for each item in the array.
 
-    // bad
-    const val = parseInt(inputValue);
+- Each `var` statement should have only one variable declared in it.
 
-    // good
-    const val = Number(inputValue);
+  ```js
+  // Bad
+  var keys = ['foo', 'bar'],
+      values = [23, 42],
+      object = {},
+      key;
 
-    // good
-    const val = parseInt(inputValue, 10);
-    ```
+  while (items.length) {
+    key = keys.pop();
+    object[key] = values.pop();
+  }
 
-  - [21.4](#21.4) <a name='21.4'></a> If for whatever reason you are doing something wild and `parseInt` is your bottleneck and need to use Bitshift for [performance reasons](http://jsperf.com/coercion-vs-casting/3), leave a comment explaining why and what you're doing.
+  // Good
+  var keys = ['foo', 'bar'];
+  var values = [23, 42];
 
-    ```javascript
-    // good
-    /**
-     * parseInt was the reason my code was slow.
-     * Bitshifting the String to coerce it to a
-     * Number made it a lot faster.
-     */
-    const val = inputValue >> 0;
-    ```
+  var object = {};
+  while (items.length) {
+    var key = keys.pop();
+    object[key] = values.pop();
+  }
+  ```
 
-  - [21.5](#21.5) <a name='21.5'></a> **Note:** Be careful when using bitshift operations. Numbers are represented as [64-bit values](http://es5.github.io/#x4.3.19), but Bitshift operations always return a 32-bit integer ([source](http://es5.github.io/#x11.7)). Bitshift can lead to unexpected behavior for integer values larger than 32 bits. [Discussion](https://github.com/airbnb/javascript/issues/109). Largest signed 32-bit Int is 2,147,483,647:
+**[⬆ back to TOC](#table-of-contents)**
 
-    ```javascript
-    2147483647 >> 0 //=> 2147483647
-    2147483648 >> 0 //=> -2147483648
-    2147483649 >> 0 //=> -2147483647
-    ```
+## Literals
 
-  - [21.6](#21.6) <a name='21.6'></a> Booleans:
+### Objects
 
-    ```javascript
-    const age = 0;
+- Add spaces inside curly braces `{` and `}`.
+  * No space for empty objects `{}`.
 
-    // bad
-    const hasAge = new Boolean(age);
+  ```js
+  // Bad
+  var obj = {a: 1, b: 2, c: 3};
+  this.method({a: 1, b: 2});
+  var empty = { };
 
-    // good
-    const hasAge = Boolean(age);
+  // Good
+  var obj = { a: 1, b: 2, c: 3 };
+  this.method({ a: 1, b: 2 });
+  var empty = {};
+  ```
 
-    // good
-    const hasAge = !!age;
-    ```
+- There should be no whitespace characters before the colon.
 
-**[⬆ back to top](#table-of-contents)**
+  ```js
+  // Bad
+  let obj = {
+    a : 1,
+    b :2,
+    c :3
+  };
 
+  // Good
+  var obj = {
+    prop: 0
+  };
+  ```
 
-## Naming Conventions
+- Only property names should be aligned within object literals.
 
-  - [22.1](#22.1) <a name='22.1'></a> Avoid single letter names. Be descriptive with your naming.
+  ```js
+  // Bad
+  var obj = {
+    a          : 0,
+    b          : 1,
+    lengthyName: 2
+  };
 
-    ```javascript
-    // bad
-    function q() {
-      // ...stuff...
-    }
+  // Good
+  var obj = {
+    a: 0,
+    b: 1,
+    lengthyName: 2
+  };
+  ```
 
-    // good
-    function query() {
-      // ..stuff..
-    }
-    ```
+- Quotes around property names should be typed only for invalid identifiers.
 
-  - [22.2](#22.2) <a name='22.2'></a> Use camelCase when naming objects, functions, and instances.
+  ```js
+  // Bad
+  var obj = {
+    'key': 0,
+    'key-key': 1
+  };
 
-    ```javascript
-    // bad
-    const OBJEcttsssss = {};
-    const this_is_my_object = {};
-    function c() {}
+  // Good
+  var obj = {
+    key: 0,
+    'key-key': 1
+  };
+  ```
 
-    // good
-    const thisIsMyObject = {};
-    function thisIsMyFunction() {}
-    ```
+**[⬆ back to TOC](#table-of-contents)**
 
-  - [22.3](#22.3) <a name='22.3'></a> Use PascalCase when naming constructors or classes.
+### Arrays
 
-    ```javascript
-    // bad
-    function user(options) {
-      this.name = options.name;
-    }
+- When enumerating elements in an array literal, spaces should be typed after the comma only.
 
-    const bad = new user({
-      name: 'nope',
-    });
+  ```js
+  var fellowship = ['foo', 'bar', 'baz'];
+  ```
 
-    // good
-    class User {
-      constructor(options) {
-        this.name = options.name;
-      }
-    }
+**[⬆ back to TOC](#table-of-contents)**
 
-    const good = new User({
-      name: 'yup',
-    });
-    ```
+### Strings
 
-  - [22.4](#22.4) <a name='22.4'></a> Use a leading underscore `_` when naming private properties.
+- String literals should use single quotes `'` over double quotes `"`.
 
-    ```javascript
-    // bad
-    this.__firstName__ = 'Panda';
-    this.firstName_ = 'Panda';
+  ```js
+  var lyrics = 'Never gonna give you up. Never gonna let you down.';
+  ```
 
-    // good
-    this._firstName = 'Panda';
-    ```
+- If a string contains a single quote character, it should be escaped.
 
-  - [22.5](#22.5) <a name='22.5'></a> Don't save references to `this`. Use arrow functions or Function#bind.
+  ```js
+  var test = 'It shouldn\'t fail';
+  ```
 
-    ```javascript
-    // bad
-    function foo() {
-      const self = this;
-      return function() {
-        console.log(self);
-      };
-    }
+- When dealing with multi-line string, follow [these rules](#string-concatenation).
 
-    // bad
-    function foo() {
-      const that = this;
-      return function() {
-        console.log(that);
-      };
-    }
+**[⬆ back to TOC](#table-of-contents)**
 
-    // good
-    function foo() {
-      return () => {
-        console.log(this);
-      };
-    }
-    ```
+## Functions
 
-  - [22.6](#22.6) <a name='22.6'></a> If your file exports a single class, your filename should be exactly the name of the class.
-    ```javascript
-    // file contents
-    class CheckBox {
+- Write small functions.
+
+  Keep your functions short. A good function fits on a slide that the people in the last row of a big room can comfortably read. So don't count on them having perfect vision and limit yourself to ~15 lines of code per function.
+- Proper spacing in a function signature.
+  * No space inside curly braces for empty functions `{}`.
+
+  ```js
+  // Bad
+  const f = function(){};
+  const g = function (){};
+  const h = function() {};
+
+  // Good
+  const x = function () {};
+  const y = function a() {};
+  ```
+
+- Immediately invoked function expressions (IIFE)
+
+  > Explanation:
+  > - An immediately invoked function expression is a single unit - wrapping both it, and its invocation parens, in parens, cleanly expresses this. Note that in a world with modules everywhere, you almost never need an IIFE.
+
+  ```js
+  // IIFE
+  (function () {
+    console.log('Welcome to the world.');
+  }());
+  ```
+
+- Never declare a function in a non-function block (if, while, etc). Assign the function to a variable instead. Browsers will allow you to do it, but they all interpret it differently.
+- Never use the Function constructor to create a new function.
+
+  > Explanation:
+  > - Creating a function in this way evaluates a string similarly to eval(), which opens vulnerabilities.
+
+- Never use the Function constructor to create a new function.
+
+  > Explanation:
+  > - Creating a function in this way evaluates a string similarly to eval(), which opens vulnerabilities.
+
+  ```js
+  // Bad
+  var add = new Function('a', 'b', 'return a + b');
+
+  // Still bad
+  var subtract = Function('a', 'b', 'return a - b');
+
+  // Good
+  var subtract = function subtract(a, b) {
+    return a - b;
+  }
+  ```
+- Never mutate or reassing parameters.
+
+  > Explanation:
+  > - Manipulating objects passed in as parameters can cause unwanted variable side effects in the original caller.
+  > - Reassigning parameters can lead to unexpected behavior, especially when accessing the arguments object. It can also cause optimization issues, especially in V8.
+
+  ```js
+  // Bad
+  function f1(a) {
+    a = 1;
+  }
+
+  function f2(a) {
+    if (!a) { a = 1; }
+  }
+
+  // Good
+  function f3(a) {
+    var b = a || 1;
+  }
+
+  function f4(a = 1) {}
+  ```
+
+**[⬆ back to TOC](#table-of-contents)**
+
+## Keywords
+
+- Keywords are always followed by a single space character.
+
+  ```js
+  if (test) {
+    // ...
+  }
+
+  function foo() {
+    // ...
+  }
+
+  var bar = function () {
+    // ...
+  };
+  ```
+
+- If the keyword is followed by a semicolon, there should be no space between them.
+
+  ```js
+  return;
+  ```
+
+**[⬆ back to TOC](#table-of-contents)**
+
+## Block Statements
+
+- The opening curly brace should be on the same line and separated with one space character.
+
+  ```js
+  if (test) {
+    // ...
+  }
+
+  function foo() {
+    // ...
+  }
+  ```
+
+- Branching and looping statements should always be surrounded with curly braces.
+
+  ```js
+  // Bad
+  if (test)
+    return;
+
+  if (test) return;
+
+  if (test) { return; }
+
+  // Good
+  if (test) {
+    return;
+  }
+  ```
+
+**[⬆ back to TOC](#table-of-contents)**
+
+## Conditional Statements
+
+### if
+
+- The `else` keyword should be on the same line as the `if` block's closing brace.
+
+  ```js
+  // Bad
+  if (test) {
+    // ...
+  }
+  else {
+    // ...
+  }
+
+  // Good
+  if (test) {
+    // ...
+  } else {
+    // ...
+  }
+  ```
+
+- Condition statements should not contain assignment operations.
+
+  ```js
+  // Bad
+  var foo;
+  if ((foo = bar()) > 0) {
+    // ...
+  }
+
+  // Good
+  var foo = bar();
+  if (foo > 0) {
+    // ...
+  }
+  ```
+
+- Logical operators should not be used for conditional branching.
+
+  ```js
+  // Bad
+  condition && actionIfTrue() || actionIfFalse();
+
+  // Good
+  if (condition) {
+    actionIfTrue();
+  } else {
+    actionIfFalse();
+  }
+  ```
+
+- Conditions longer than the [maximum line length](#general-formatting) should be divided into multiple  lines to improve readability.
+- Conditions should be indented to the first character of the condition in the first line.
+
+  ```js
+  if (longCondition ||
+      anotherLongCondition &&
+      yetAnotherLongCondition
+  ) {
+    console.log('Do like I do.');
+  }
+  ```
+
+- [Yoda conditions](http://en.wikipedia.org/wiki/Yoda_conditions) should not be used:
+
+  ```js
+  // Bad
+  if ('driving' === getType()) {
+    // ...
+  }
+
+  // Good
+  if (getType() === 'driving') {
+    // ...
+  }
+  ```
+
+**[⬆ back to TOC](#table-of-contents)**
+
+### switch
+
+The switch statement should be written as in the example.
+
+  ```js
+  // Bad
+ switch (foo) {
+ case 1:
+   let x = 1;
+   break;
+ case 2:
+   const y = 2;
+   break;
+ case 3:
+   function f() {}
+   break;
+ default:
+   class C {}
+ }
+
+  // Good
+  switch (value) {
+    case 1:
       // ...
+      break;
+
+    case 2:
+      // ...
+      break;
+
+    default:
+      // ...
+      // no break keyword on the last case
+  }
+  ```
+
+**[⬆ back to TOC](#table-of-contents)**
+
+## Loops
+
+### for
+
+- Usually used with arrays.
+- If possible, [Array.prototype.forEach](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach) should be used instead of a `for` loop.
+
+  ```js
+  [1, 2, 3].forEach(function (value) {
+    console.log(value);
+  });
+  ```
+- Performance-critical parts of the code can use a regular `for` loop.
+
+**[⬆ back to TOC](#table-of-contents)**
+
+### for..in
+
+- Should be used for objects.
+- If possible, [Object.keys](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys) should be used instead of a `for..in` construction.
+
+  ```js
+  Object.keys(obj).forEach(function (key) {
+    console.log(key);
+  });
+  ```
+
+**[⬆ back to TOC](#table-of-contents)**
+
+## Operators
+
+### with
+
+The `with` operator should not be used.
+
+**[⬆ back to TOC](#table-of-contents)**
+
+### Comparison Operators
+
+If there is no need for type casting, the strict equality operator `===` (or strict inequality `!==`) should be used over `==` and `!=`.
+
+**[⬆ back to TOC](#table-of-contents)**
+
+### Ternary Operator
+
+The ternary operator should be written as in the examples.
+
+```js
+var x = a ? b : c;
+
+var y = a ?
+    longButSimpleOperandB : longButSimpleOperandC;
+
+var z = a ?
+    moreComplicatedB :
+    moreComplicatedC;
+```
+
+**[⬆ back to TOC](#table-of-contents)**
+
+### Unary Operators
+
+Unary operators should be typed without whitespace between them and their operands:
+
+```js
+var foo = !bar;
+```
+
+Exceptions from this rule are the unary [special JS operators](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Expressions_and_Operators#Unary_operators), such as `delete`, `typeof`, `void`.
+
+**[⬆ back to TOC](#table-of-contents)**
+
+## eval
+
+The `eval` function should be avoided.
+`json` serialized data should be parsed with [JSON.parse](https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/JSON/parse).
+
+**[⬆ back to TOC](#table-of-contents)**
+
+## undefined
+
+- Checking for `undefined` value of declared variable (e.g. function argument) should be done by using the strict equality operator.
+
+  > Explanation:
+  > - In modern browsers (`IE9+`, `Opera 12.16+`, `Firefox 4+`) [undefined](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined) is immutable (a non-configurable, non-writable property of the global object).
+  > - It prevents undeclared variables usage.
+
+  ```js
+  // Bad
+  typeof x === 'undefined';
+  x === void 0;
+
+  // Good
+  x === undefined;
+  ```
+
+  **Exceptions:**
+
+- `typeof` should be used if you need to support old browsers (like `IE8`) where `window.undefined` property is mutable.
+- `typeof` may be used in place where `string` type is expected.
+
+    ```js
+    switch (typeof x) {
+      case 'number':
+        // ...
+      case 'undefined':
+        // ...
     }
-    export default CheckBox;
-
-    // in some other file
-    // bad
-    import CheckBox from './checkBox';
-
-    // bad
-    import CheckBox from './check_box';
-
-    // good
-    import CheckBox from './CheckBox';
     ```
 
-  - [22.7](#22.7) <a name='22.7'></a> Use camelCase when you export-default a function. Your filename should be identical to your function's name.
+- Checking for existence of a global variable should be done by using `typeof` operator or by checking existence of a property of the global object.
 
-    ```javascript
-    function makeStyleGuide() {
+  > Explanation:
+  > - An attempt to access undeclared variable will result in an error.
+
+  ```js
+  if (typeof Foo !== 'undefined') {
+    // ...
+  }
+
+  // Also okay for browser only code (`window` is unavailable in Node.js)
+  if (window.Foo !== undefined) {
+    // ...
+  }
+  ```
+
+**[⬆ back to TOC](#table-of-contents)**
+
+## Parentheses
+
+- Should not be used with the unary operators `delete`, `typeof` and `void`, or with the keywords `return`, `throw` and `new`.
+
+  ```js
+  // Bad
+  delete(obj.key);
+  typeof(x) === 'number';
+  new(Type)();
+  throw(new Error());
+
+  // Good
+  delete obj.key;
+  typeof x === 'number';
+  new Type();
+  throw new Error();
+  ```
+
+- Explicit parentheses in logical or mathematical expressions can be used to increase readability.
+
+  ```js
+  // equivalent to a - b > c && c || c + d && d + 1 || e
+  ((a - b > c) && c) || (c + d && d + 1) || e;
+  ```
+
+**[⬆ back to TOC](#table-of-contents)**
+
+## Exceptions
+
+`throw` should be used with `new Error` or an object of a class derived from `Error`.
+
+  ```js
+  // Bad
+  throw 'Plain message';
+
+  // Good
+  throw new Error('Error message');
+  ```
+
+**[⬆ back to TOC](#table-of-contents)**
+
+## Type Casting
+
+- Type casting should be done explicitly.
+  * Strings: use the `String` global object directly;
+  * Numbers: Use `Number` for type casting and `parseInt` always with a radix for parsing strings;
+  * Booleans: use `Boolean` object constructor directly or `!!`.
+
+  ```js
+  // Bad
+  new Boolean(foo);
+  +bar;
+  baz + '';
+  ~[].indexOf(qux);
+  var val = parseInt(inputVal);
+
+  // Good
+  Boolean(foo);
+  !!foo;
+  Number(bar);
+  String(baz);
+  [].indexOf(qux) === -1 or [].indexOf(qux) < 0;
+  var val = parseInt(inputVal, 10);
+  ```
+
+**[⬆ back to TOC](#table-of-contents)**
+
+## Multi-Line Statements
+
+- If a statement is longer than the [maximum line length](#general-formatting), it's recommended to split it into several lines and properly indent.
+- Lines of the statement should be split after an operator.
+
+  ```js
+  var debt = this.calculateBaseDebt() + this.calculateSharedDebt() + this.calculateDebtPayments() +
+    this.calculateDebtFine();
+  ```
+
+- Closing parentheses should be on a new line with the indentation of the current block statement.
+
+  ```js
+  // Bad
+  DoSomethingThatRequiresALongFunctionName(
+    veryLongArgument1,
+    argument2,
+    argument3,
+    argument4);
+  anotherStatement;
+
+  // Good
+  DoSomethingThatRequiresALongFunctionName(
+    veryLongArgument1,
+    argument2,
+    argument3,
+    argument4
+  );
+  anotherStatement;
+  ```
+
+**[⬆ back to TOC](#table-of-contents)**
+
+## Method Chaining
+
+- When a method is called on a new line, it should:
+  * be one indentation level deeper than the target object;
+  * begin with the property access operator `.`
+
+  ```js
+  // Bad
+  someObject.
+   start().
+   end();
+
+  someObject
+  .start()
+  .end();
+
+  // Good
+  someObject
+    .operation()
+    .operationWithCallback(function (obj) {
+      obj.processed = true;
+    })
+   .end();
+  ```
+
+**[⬆ back to TOC](#table-of-contents)**
+
+## String Concatenation
+
+- Strings should be concatenated with the `+` (string concatenation) operator.
+- The `[].join('')` should be avoided.
+- Escaping newline literals inside strings should be avoided.
+- Each new line should be indented with 2 space characters.
+
+  ```js
+  // Bad
+  var foo = 'A rather long string of English text, an error message \
+            actually that just keeps going and going -- an error \
+            message to make the Energizer bunny blush (right through \
+            those Schwarzenegger shades)! Where was I? Oh yes, \
+            you\'ve got an error and all the extraneous whitespace is \
+            just gravy. Have a nice day.';
+
+  // Good
+  var foo = 'A rather long string of English text, an error message ' +
+    'actually that just keeps going and going -- an error ' +
+    'message to make the Energizer bunny blush (right through ' +
+    'those Schwarzenegger shades)! Where was I? Oh yes, ' +
+    'you\'ve got an error and all the extraneous whitespace is ' +
+    'just gravy. Have a nice day.';
+  ```
+
+**[⬆ back to TOC](#table-of-contents)**
+
+## Empty Lines
+
+A single empty line can be used as a separator for grouping the code into logical blocks.
+
+```js
+doSomethingTo(x);
+doSomethingElseTo(x);
+andThen(x);
+
+nowDoSomethingWith(y);
+
+andNowWith(z);
+```
+
+**[⬆ back to TOC](#table-of-contents)**
+
+## Function Context
+
+- Binding the context variable for function calls should be done using [Function.prototype.bind](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind).
+
+  ```js
+  doAsync(function () {
+    this.fn();
+  }.bind(this));
+  ```
+
+- Preferably, the context argument should be used (if available).
+
+  ```js
+  // Bad
+  [1, 2, 3].forEach(function (n) {
+    this.fn(n);
+  }.bind(this));
+
+  // Good
+  [1, 2, 3].forEach(function (n) {
+    this.fn(n);
+  }, this);
+  ```
+
+- If assigning the current context to a variable, the variable should be named `_this`.
+
+  ```js
+  // Bad
+  var that = this;
+  vat self = this;
+
+  // Good
+  var _this = this;
+  doAsync(function () {
+    _this.fn();
+  });
+  ```
+
+**[⬆ back to TOC](#table-of-contents)**
+
+## Comments
+
+- In-line (single-line) comments should start with `//`. Between the `//` and the text of the comment should be 1 space character. Place single line comments on a newline above the subject of the comment. Put an empty line before the comment unless it's on the first line of a block.
+- Always begin sentences with an upper case.
+- No trailing `.` unless comment contains multiple sentences.
+- Formal style, consistent voice, no humor, present tense.
+- No developer name or other personal notes.
+- Prefixing your comments with `FIXME` or `TODO` helps other developers quickly understand if you're pointing out a problem that needs to be revisited, or if you're suggesting a solution to the problem that needs to be implemented. These are different than regular comments because they are actionable. The actions are `FIXME -- need to figure this out` or `TODO -- need to implement`.
+- Comments for functions, methods, classes, etc. should be written according to the [JSDoc](http://usejsdoc.org/) documentation syntax, using `/** ... */`.
+
+  ```js
+  // Bad
+
+  // Return a new element
+  // based on the passed in tag name
+  function make(tag) {
+    console.log('fetching type...');
+    // set the default type to 'no type'
+    var type = this._type || 'no type';
+
+    var active = true;  // is current element
+
+    // ...
+
+    return element;
+  }
+
+  // Good
+
+  /**
+   * Return a new element based on the passed in tag name.
+   *
+   * @param {string} tag Tag name
+   * @returns {Element} element
+   */
+  function make(tag) {
+    console.log('fetching type...');
+
+    // Set the default type to 'no type'
+    var type = this._type || 'no type';
+
+    // Is current tab
+    const active = true;
+
+    // ...
+
+    return element;
+  }
+  ```
+
+**[⬆ back to TOC](#table-of-contents)**
+
+## Classes
+
+- "Symmetrical" methods should be declared one after the other.
+
+  ```js
+  var SampleClass = inherit({
+    __constructor: function () {},
+
+    // Destructors are placed right after the constructor
+    destruct: function () {},
+
+    someMethod: function () {}
+  });
+  ```
+- Methods can return `this` to help with method chaining.
+
+  ```js
+  class Jedi {
+    jump() {
+      this.jumping = true;
+      return this;
     }
 
-    export default makeStyleGuide;
-    ```
-
-  - [22.8](#22.8) <a name='22.8'></a> Use PascalCase when you export a singleton / function library / bare object.
-
-    ```javascript
-    const PersonalStyleGuide = {
-      es6: {
-      }
-    };
-
-    export default PersonalStyleGuide;
-    ```
-
-
-**[⬆ back to top](#table-of-contents)**
-
-
-## Accessors
-
-  - [23.1](#23.1) <a name='23.1'></a> Accessor functions for properties are not required.
-  - [23.2](#23.2) <a name='23.2'></a> If you do make accessor functions use getVal() and setVal('hello').
-
-    ```javascript
-    // bad
-    dragon.age();
-
-    // good
-    dragon.getAge();
-
-    // bad
-    dragon.age(25);
-
-    // good
-    dragon.setAge(25);
-    ```
-
-  - [23.3](#23.3) <a name='23.3'></a> If the property is a `boolean`, use `isVal()` or `hasVal()`.
-
-    ```javascript
-    // bad
-    if (!dragon.age()) {
-      return false;
+    setHeight(height) {
+      this.height = height;
+      return this;
     }
+  }
 
-    // good
-    if (!dragon.hasAge()) {
-      return false;
-    }
-    ```
+  const luke = new Jedi();
 
-  - [23.4](#23.4) <a name='23.4'></a> It's okay to create get() and set() functions, but be consistent.
+  luke
+    .jump()
+    .setHeight(20);
+  ```
 
-    ```javascript
-    class Jedi {
-      constructor(options = {}) {
-        const lightsaber = options.lightsaber || 'blue';
-        this.set('lightsaber', lightsaber);
-      }
+- Prefix private prototype members with `_`.
 
-      set(key, val) {
-        this[key] = val;
-      }
+  ```js
+  Example.prototype.method = function () {
+    this.public = 'external';
+    this._private = 'internal';
+  }
+  ```
 
-      get(key) {
-        return this[key];
-      }
-    }
-    ```
+- Enforce new on Constructor.
 
-**[⬆ back to top](#table-of-contents)**
+  Use `this instanceof` to check if a constructor function was called with new. (This allows for future prototypical inheritance)
 
+  ```js
+  if (this instanceof ConstructorName) {
+    // ...
+  }
+  ```
+
+**[⬆ back to TOC](#table-of-contents)**
+
+## Enums
+
+- Enum names should be in `UpperCamelCase`.
+- Enum members should be in `ALL_CAPS`.
+
+```js
+var Color = {
+  BLUE: '#00d',
+  RED: '#d00'
+};
+```
+
+**[⬆ back to TOC](#table-of-contents)**
 
 ## Events
 
-  - [24.1](#24.1) <a name='24.1'></a> When attaching data payloads to events (whether DOM events or something more proprietary like Backbone events), pass a hash instead of a raw value. This allows a subsequent contributor to add more data to the event payload without finding and updating every handler for the event. For example, instead of:
+- When attaching data payloads to events (whether DOM events or something more proprietary like Backbone events), pass a hash instead of a raw value. This allows a subsequent contributor to add more data to the event payload without finding and updating every handler for the event. For example, instead of:
 
-    ```javascript
-    // bad
-    $(this).trigger('listingUpdated', listing.id);
+  ```js
+  // Bad
+  $(this).trigger('itemUpdated', item.id);
 
-    ...
+  $(this).on('itemUpdated', (e, itemId) => {
+    // Do something with itemId
+  });
+  ```
 
-    $(this).on('listingUpdated', function(e, listingId) {
-      // do something with listingId
-    });
-    ```
+  prefer:
 
-    prefer:
+  ```js
+  // Good
+  $(this).trigger('itemUpdated', { itemId: item.id });
 
-    ```javascript
-    // good
-    $(this).trigger('listingUpdated', { listingId: listing.id });
+  $(this).on('itemUpdated', (e, data) => {
+    // Do something with data.itemId
+  });
+  ```
 
-    ...
-
-    $(this).on('listingUpdated', function(e, data) {
-      // do something with data.listingId
-    });
-    ```
-
-  **[⬆ back to top](#table-of-contents)**
-
+**[⬆ back to TOC](#table-of-contents)**
 
 ## jQuery
 
-  - [25.1](#25.1) <a name='25.1'></a> Prefix jQuery object variables with a `$`.
+- Prefix jQuery object variables with a `$`.
 
-    ```javascript
-    // bad
-    const sidebar = $('.sidebar');
+  ```js
+  // Bad
+  var target = $('.target');
 
-    // good
-    const $sidebar = $('.sidebar');
+  // Good
+  var $target = $('.target');
+  ```
 
-    // good
-    const $sidebarBtn = $('.sidebar-btn');
-    ```
+- Cache jQuery lookups.
+- Use `find` method with scoped jQuery object queries.
 
-  - [25.2](#25.2) <a name='25.2'></a> Cache jQuery lookups.
+  ```js
+  // Bad
+  $('nav').find('ul').hide();
 
-    ```javascript
-    // bad
-    function setSidebar() {
-      $('.sidebar').hide();
+  // Good
+  $target.find('ul').hide();
+  ```
 
-      // ...stuff...
-
-      $('.sidebar').css({
-        'background-color': 'pink'
-      });
-    }
-
-    // good
-    function setSidebar() {
-      const $sidebar = $('.sidebar');
-      $sidebar.hide();
-
-      // ...stuff...
-
-      $sidebar.css({
-        'background-color': 'pink'
-      });
-    }
-    ```
-
-  - [25.3](#25.3) <a name='25.3'></a> For DOM queries use Cascading `$('.sidebar ul')` or parent > child `$('.sidebar > ul')`. [jsPerf](http://jsperf.com/jquery-find-vs-context-sel/16)
-  - [25.4](#25.4) <a name='25.4'></a> Use `find` with scoped jQuery object queries.
-
-    ```javascript
-    // bad
-    $('ul', '.sidebar').hide();
-
-    // bad
-    $('.sidebar').find('ul').hide();
-
-    // good
-    $('.sidebar ul').hide();
-
-    // good
-    $('.sidebar > ul').hide();
-
-    // good
-    $sidebar.find('ul').hide();
-    ```
-
-**[⬆ back to top](#table-of-contents)**
-
-
-## ECMAScript 5 Compatibility
-
-  - [26.1](#26.1) <a name='26.1'></a> Refer to [Kangax](https://twitter.com/kangax/)'s ES5 [compatibility table](http://kangax.github.com/es5-compat-table/).
-
-**[⬆ back to top](#table-of-contents)**
-
-## ECMAScript 6 Styles
-
-  - [27.1](#27.1) <a name='27.1'></a> This is a collection of links to the various es6 features.
-
-1. [Arrow Functions](#arrow-functions)
-1. [Classes](#constructors)
-1. [Object Shorthand](#es6-object-shorthand)
-1. [Object Concise](#es6-object-concise)
-1. [Object Computed Properties](#es6-computed-properties)
-1. [Template Strings](#es6-template-literals)
-1. [Destructuring](#destructuring)
-1. [Default Parameters](#es6-default-parameters)
-1. [Rest](#es6-rest)
-1. [Array Spreads](#es6-array-spreads)
-1. [Let and Const](#references)
-1. [Iterators and Generators](#iterators-and-generators)
-1. [Modules](#modules)
-
-**[⬆ back to top](#table-of-contents)**
+**[⬆ back to TOC](#table-of-contents)**
 
 ## Testing
 
-  - [28.1](#28.1) <a name='28.1'></a> **Yup.**
-
-    ```javascript
-    function() {
-      return true;
-    }
-    ```
+- **Yup.**
+- Whichever [testing framework](https://coderwall.com/p/ntbixw/javascript-test-framework-comparison) you use, you should be writing tests!
+- Strive to write many small pure functions, and minimize where mutations occur.
+- 100% test coverage is a good goal to strive for, even if it's not always practical to reach it.
 
 **[⬆ back to top](#table-of-contents)**
-
 
 ## Performance
 
-  - [On Layout & Web Performance](http://kellegous.com/j/2013/01/26/layout-performance/)
-  - [String vs Array Concat](http://jsperf.com/string-vs-array-concat/2)
-  - [Try/Catch Cost In a Loop](http://jsperf.com/try-catch-in-loop-cost)
-  - [Bang Function](http://jsperf.com/bang-function)
-  - [jQuery Find vs Context, Selector](http://jsperf.com/jquery-find-vs-context-sel/13)
-  - [innerHTML vs textContent for script text](http://jsperf.com/innerhtml-vs-textcontent-for-script-text)
-  - [Long String Concatenation](http://jsperf.com/ya-string-concat)
-  - Loading...
+- [On Layout & Web Performance](http://www.kellegous.com/j/2013/01/26/layout-performance/)
+- [String vs Array Concat](http://jsperf.com/string-vs-array-concat/18)
+- [Try/Catch Cost In a Loop](http://jsperf.com/try-catch-in-loop-cost/10)
+- [Bang Function](http://jsperf.com/bang-function/48)
+- [jQuery Find vs Context, Selector](http://jsperf.com/jquery-find-vs-context-sel/153)
+- [innerHTML vs textContent for script text](http://jsperf.com/innerhtml-vs-textcontent-for-script-text/18)
+- [Long String Concatenation](http://jsperf.com/ya-string-concat/35)
 
 **[⬆ back to top](#table-of-contents)**
-
 
 ## Resources
 
 **Other Style Guides**
 
-  - [Google JavaScript Style Guide](http://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml)
-  - [jQuery Core Style Guidelines](http://docs.jquery.com/JQuery_Core_Style_Guidelines)
-  - [Principles of Writing Consistent, Idiomatic JavaScript](https://github.com/rwldrn/idiomatic.js/)
+  - [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript)
+  - [Google JavaScript Style Guide](https://google.github.io/styleguide/javascriptguide.xml)
+  - [GitHub JavaScript styleguide](https://github.com/styleguide/javascript)
+  - [Principles of Writing Consistent, Idiomatic JavaScript](https://github.com/rwaldron/idiomatic.js)
+  - [jQuery JavaScript Style Guide](http://contribute.jquery.org/style-guide/js/)
 
 **Other Styles**
 
-  - [Naming this in nested functions](https://gist.github.com/4135065) - Christian Johansen
-  - [Conditional Callbacks](https://github.com/airbnb/javascript/issues/52) - Ross Allen
-  - [Popular JavaScript Coding Conventions on Github](http://sideeffect.kr/popularconvention/#javascript) - JeongHoon Byun
-  - [Multiple var statements in JavaScript, not superfluous](http://benalman.com/news/2012/05/multiple-var-statements-javascript/) - Ben Alman
+  - [Ideas on naming this in nested functions](https://gist.github.com/cjohansen/4135065)
+  - [Conditional Callbacks](https://github.com/airbnb/javascript/issues/52)
+  - [Popular JavaScript Coding Conventions on Github](http://sideeffect.kr/popularconvention/#javascript)
+  - [Multiple var statements in JavaScript, not superfluous](http://benalman.com/news/2012/05/multiple-var-statements-javascript/)
 
 **Further Reading**
 
-  - [Understanding JavaScript Closures](http://javascriptweblog.wordpress.com/2010/10/25/understanding-javascript-closures/) - Angus Croll
+  - [Understanding JavaScript Closures](https://javascriptweblog.wordpress.com/2010/10/25/understanding-javascript-closures/) - Angus Croll
   - [Basic JavaScript for the impatient programmer](http://www.2ality.com/2013/06/basic-javascript.html) - Dr. Axel Rauschmayer
   - [You Might Not Need jQuery](http://youmightnotneedjquery.com/) - Zack Bloom & Adam Schwartz
   - [ES6 Features](https://github.com/lukehoban/es6features) - Luke Hoban
   - [Frontend Guidelines](https://github.com/bendc/frontend-guidelines) - Benjamin De Cock
 
-**Blogs**
-
-  - [DailyJS](http://dailyjs.com/)
-  - [JavaScript Weekly](http://javascriptweekly.com/)
-  - [JavaScript, JavaScript...](http://javascriptweblog.wordpress.com/)
-  - [Bocoup Weblog](http://weblog.bocoup.com/)
-  - [Adequately Good](http://www.adequatelygood.com/)
-  - [NCZOnline](http://www.nczonline.net/)
-  - [Perfection Kills](http://perfectionkills.com/)
-  - [Ben Alman](http://benalman.com/)
-  - [Dmitry Baranovskiy](http://dmitry.baranovskiy.com/)
-  - [Dustin Diaz](http://dustindiaz.com/)
-  - [nettuts](http://net.tutsplus.com/?s=javascript)
-
 **[⬆ back to top](#table-of-contents)**
-
-## Amendments
-
-I encourage you to fork this guide and change the rules to fit your team's style guide. Below, you may list some amendments to the style guide. This allows you to periodically update your style guide without having to deal with merge conflicts.
