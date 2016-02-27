@@ -22,7 +22,7 @@ I tend to describe it as a clear, concise and predictable approach to writing my
       - [switch](#switch)
   1. [Loops](#loops)
       - [for](#for)
-      - [for..in)](#for--in)
+      - [for..in)](#forin)
   1. [Operators](#operators)
       - [with](#with)
       - [Comparison Operators](#comparison-operators)
