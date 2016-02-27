@@ -1,4 +1,4 @@
-# Personal Code Style
+# Personal Coding Style
 
 Finally decided it's time to make an agreement on how I write front-end code.
 
@@ -19,3 +19,9 @@ List of packages that help check code style in your project and enforce suggeste
 
 * [eslint-config](linters/.eslintrc)
 * [jscs-preset](linters/.jscsrc)
+
+## License
+
+(The MIT License)
+
+Copyright (c) 2016 Nick S. Plekhanov
