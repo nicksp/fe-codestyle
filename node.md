@@ -4,7 +4,7 @@ This section outlines styling rules for [Node.js](https://nodejs.org/dist/latest
 
 ## Table of Contents
 
-  1. [Formatting](#formatting)
+  1. [General Formatting](#general-formatting)
   1. [Naming Conventions](#naming-conventions)
   1. [Importing Modules](#importing-modules)
   1. [Module Globals](#module-globals)
@@ -12,14 +12,18 @@ This section outlines styling rules for [Node.js](https://nodejs.org/dist/latest
   1. [Promises](#promises)
   1. [Miscellaneous](#miscellaneous)
 
-## Formatting
+## General Formatting
 
-- Files should be encoded in **UTF-8** without BOM.
-- Use 2 spaces for indenting your code. Never mix tabs and spaces.
-- Use UNIX-style newlines `LF` (`\n`), and a newline character as the last character of a file.
-- Clean up any trailing whitespace in your JS files before committing.
+- Files should be encoded in UTF-8 without [BOM](http://en.wikipedia.org/wiki/Byte-order_mark).
+- Use UNIX-like line-break character `LF` - `\n`.
+- Files should end with a `LF` character.
+- One level of indentation is achieved with 2 spaces. Spaces are the only way to guarantee code renders the same in any person’s environment and improve readability. Always be consistent in your use of whitespace. Never mix them with tabs.
+- Clean up any trailing whitespace at the end of lines in your JS files before committing. Trailing whitespace is unnecessary and can complicate diffs.
+
+  ***Pro tip:*** use an [EditorConfig](http://editorconfig.org/) file (or equivalent) to help maintain the basic whitespace conventions that have been agreed for your code-base. For an example, see [the one in my Redux boilerplate](https://github.com/nicksp/redux-webpack-es6-boilerplate/blob/extended/.editorconfig).
+
 - Try to be explicit: **use semicolons**.
-- Limit your lines to 120 characters.
+- Lines should be no longer than 120 characters.
 - Use single quotes for strings, unless you are writing JSON.
 
   ```js
