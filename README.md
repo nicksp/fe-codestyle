@@ -17,8 +17,8 @@ Finally decided it's time to make an agreement on how I write front-end code.
 
 List of packages that help check code style in your project and enforce suggested rules as closely as possible:
 
-* [eslint-config](linters/.eslintrc)
-* [jscs-preset](linters/.jscsrc)
+* [ESLint config](linters/.eslintrc)
+* [JSCS preset](linters/.jscsrc)
 
 ## License
 
