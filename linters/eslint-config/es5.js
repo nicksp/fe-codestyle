@@ -1,5 +1,5 @@
 {
-  rules: {
+  "rules": {
     // http://eslint.org/docs/rules/#possible-errors
     "comma-dangle": [2, "never"],
     "no-cond-assign": [2, "always"],
