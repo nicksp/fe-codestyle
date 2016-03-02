@@ -7,6 +7,7 @@ This document outlines opinionated CSS and Sass code style guide. Influenced pri
   1. [General Formatting Rules](#general-formatting-rules)
   1. [Philosophy](#philosophy)
   1. [Terminology](#terminology)
+  1. [BEM 101](#bem-101)
   1. [CSS Formatting Rules](#css-formatting-rules)
   1. [Sass Specifics](#sass-specifics)
   1. [Resources](#resources)
@@ -104,6 +105,93 @@ In the example above:
 - **Modifiers** are variations on the default. In this case we have a <code>menu--top</code>. This provides the position for the menu.
 
 Though somewhat verbose, this syntax makes it easy to determine the child/parent relationships between bits of code, especially when different objects are mixed together. It can be tricky naming elements so some judgment is required. This becomes easier with practice.
+
+**[⬆ back to TOC](#table-of-contents)**
+
+## BEM 101
+
+- Benefits:
+  * code sharing
+  * living style guide
+  * scalability
+  * faster development
+  * eliminating specificity problems (because BEM provides unique class names for most styles, you'd depend only on the order of rules)
+  * no more cascades (every BEM CSS class is unique and self-sufficient, doesn't depend on tags or IDs, so we need only a single class name selector to style our BEN entities. In some cases we might need two class names in a selector, when a block modifier affects individual elements, i.e.: .text-input_disabled .text-input __label {})
+
+### Block
+
+A block is an independent entity with its own meaning that represents a piece of interface on a page.
+
+**Examples**
+  * Heading
+  * Button
+  * Menu
+
+To define a block, you'd give it a unique name and specify its semantics. Several instances of the same block definition might be presented on a page.
+
+### Element
+
+An element is an integral part of a block, tied to it semantically and functionally. It has no meaning outside of the block it belongs to. Not all blocks have elements.
+
+**Examples**
+  * Menu items of a menu block
+  * Form elements (different kind of inputs for example)
+
+### Modifier
+
+Modifiers are states/flags set on blocks or elements. They might be of two types:
+
+  * boolean: `visible`
+  * key-value pairs: `size: large`
+
+### DOM
+
+BEM uses CSS class names to denote blocks, elements and modifiers. One DOM node may host several blocks. A node may be an element within one block and a container for another block at the same time. Such scenario is called a "BEM mixin".
+
+### Naming Conventions
+
+- Keep the names of blocks, elements and modifiers short and semantic.
+- Use only latin letters, dashes and digits.
+
+Element containers within a block get CSS classes consisting of their block class, two underscores and the element's name:
+
+```css
+.text-input__label
+.text-input__text-field
+```
+
+**Note:** BEM entity can not be represented as an element of another element and the following string representation will be invalid:
+
+```css
+.block__elem-1__sub-elem-2
+```
+
+Modifiers belong to a block or an element. Their CSS class is the class name of their parent block, one underscore and a modifier name:
+
+```css
+.text-input_disabled
+.select__option_selected
+```
+
+Some modifiers are key-value pairs with more than one possible value. Use another underscore to separate the values:
+
+```css
+.heading_level_alpha
+```
+
+Modifier classes are used together with the block and element class, like so:
+
+```html
+<div class="heading heading_level_alpha">BEM</div>
+```
+
+**Note:** Also there is no such BEM entity as a modifier and an element modifier simultaneously so the following string representation will be invalid:
+
+```css
+.block_block-mod-name_block-mod-val__elem-name_elem-mod-name_elem-mod-val
+```
+
+
 
 **[⬆ back to TOC](#table-of-contents)**
 
