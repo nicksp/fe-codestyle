@@ -15,6 +15,7 @@ I tend to describe it as a clear, concise and predictable approach to writing my
       - [Arrays](#arrays)
       - [Strings](#strings)
   1. [Functions](#functions)
+      - [this Keyword](#this-keyword)
   1. [Keywords](#keywords)
   1. [Block Statements](#block-statements)
   1. [Conditional Statements](#conditional-statements)
@@ -37,7 +38,6 @@ I tend to describe it as a clear, concise and predictable approach to writing my
   1. [Method Chaining](#method-chaining)
   1. [String Concatenation](#string-concatenation)
   1. [Empty Lines](#empty-lines)
-  1. [Function Context](#function-context)
   1. [Comments](#comments)
   1. [Classes](#classes)
   1. [Enums](#enums)
@@ -343,7 +343,7 @@ I tend to describe it as a clear, concise and predictable approach to writing my
     return a - b;
   }
   ```
-- Never mutate or reassing parameters.
+- Never mutate or reassign parameters.
 
   > Explanation:
   > - Manipulating objects passed in as parameters can cause unwanted variable side effects in the original caller.
@@ -365,6 +365,45 @@ I tend to describe it as a clear, concise and predictable approach to writing my
   }
 
   function f4(a = 1) {}
+  ```
+
+### this Keyword
+
+- Binding the `this` value for function calls should be done using [Function.prototype.bind](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind).
+
+  ```js
+  doAsync(function () {
+    this.fn();
+  }.bind(this));
+  ```
+  **Note:** in ECMAScript 6 [arrow functions](es6.md#arrow-functions) are preferred.
+
+- Preferably, the context argument should be used for the value of `this` (if available).
+
+  ```js
+  // Bad
+  [1, 2, 3].forEach(function (n) {
+    this.fn(n);
+  }.bind(this));
+
+  // Good
+  [1, 2, 3].forEach(function (n) {
+    this.fn(n);
+  }, this);
+  ```
+
+- If assigning the `this` value to a variable, it should be named `_this`.
+
+  ```js
+  // Bad
+  var that = this;
+  vat self = this;
+
+  // Good
+  var _this = this;
+  doAsync(function () {
+    _this.fn();
+  });
   ```
 
 **[⬆ back to TOC](#table-of-contents)**
@@ -842,46 +881,6 @@ nowDoSomethingWith(y);
 
 andNowWith(z);
 ```
-
-**[⬆ back to TOC](#table-of-contents)**
-
-## Function Context
-
-- Binding the context variable for function calls should be done using [Function.prototype.bind](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind).
-
-  ```js
-  doAsync(function () {
-    this.fn();
-  }.bind(this));
-  ```
-
-- Preferably, the context argument should be used (if available).
-
-  ```js
-  // Bad
-  [1, 2, 3].forEach(function (n) {
-    this.fn(n);
-  }.bind(this));
-
-  // Good
-  [1, 2, 3].forEach(function (n) {
-    this.fn(n);
-  }, this);
-  ```
-
-- If assigning the current context to a variable, the variable should be named `_this`.
-
-  ```js
-  // Bad
-  var that = this;
-  vat self = this;
-
-  // Good
-  var _this = this;
-  doAsync(function () {
-    _this.fn();
-  });
-  ```
 
 **[⬆ back to TOC](#table-of-contents)**
 
