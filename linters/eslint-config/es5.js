@@ -32,6 +32,7 @@
     "no-with": 2,
     "radix": 2,
     "semi": [2, "always"],
+    "strict": [2, "safe"],
     "yoda": [2, "never"],
 
     // http://eslint.org/docs/rules/#variables

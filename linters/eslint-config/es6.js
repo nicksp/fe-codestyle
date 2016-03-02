@@ -28,7 +28,6 @@
   "rules": {
     "no-loop-func": 0,
     "no-unused-vars": 0,
-    "strict": [2, "global"],
     "arrow-body-style": [2, "as-needed"],
     "arrow-parens": [2, "always"],
     "arrow-spacing": [2, {before: true, after: true}],
