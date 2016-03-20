@@ -37,6 +37,9 @@
     "no-dupe-class-members": 2,
     "no-this-before-super": 2,
     "no-var": 2,
-    "prefer-const": 2
+    "prefer-arrow-callback": 2,
+    "prefer-const": 2,
+    "template-curly-spacing": [2, "never"],
+    "yield-star-spacing": [2, "after"]
   }
 }
