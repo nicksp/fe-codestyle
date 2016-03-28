@@ -44,6 +44,7 @@
   "requireParenthesesAroundIIFE": true,
   "requireSpacesInAnonymousFunctionExpression": {
     "beforeOpeningRoundBrace": true,
+    "beforeOpeningCurlyBrace": true,
     "allExcept": ["shorthand"]
   },
   "requireSpacesInConditionalExpression": {
