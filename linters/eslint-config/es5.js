@@ -1,4 +1,12 @@
 {
+  "parserOptions": {
+    "ecmaVersion": 5,
+    "sourceType": "script",
+    "ecmaFeatures": {
+      "impliedStrict": true
+    }
+  },
+
   "rules": {
     // http://eslint.org/docs/rules/#possible-errors
     "comma-dangle": [2, "never"],
