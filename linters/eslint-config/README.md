@@ -10,11 +10,11 @@ $ npm install --save-dev eslint
 
 ## For ECMAScript 5
 
-Append content of [`es5.js`](es5.js) in your [`.eslintrc`](../.eslintrc) file.
+Append content of [`es5.js`](es5.js) in your [`.eslintrc.js`](../.eslintrc.js) file.
 
 ## For ECMAScript 6
 
-Append content of [`es6.js`](es6.js) in your [`.eslintrc`](../.eslintrc) file.
+Append content of [`es6.js`](es6.js) in your [`.eslintrc.js`](../.eslintrc.js) file.
 
 ## For React
 
@@ -24,8 +24,8 @@ Append content of [`es6.js`](es6.js) in your [`.eslintrc`](../.eslintrc) file.
   $ npm install --save-dev eslint-plugin-react
   ```
 
-- Inject React specific [linting rules](react.js) for ESLint [config file](../.eslintrc).
+- Inject React specific [linting rules](react.js) for ESLint [config file](../.eslintrc.js).
 
 ## For Node.js
 
-Append content of [`node.js`](node.js) in your [`.eslintrc`](../.eslintrc) file.
+Append content of [`node.js`](node.js) in your [`.eslintrc.js`](../.eslintrc.js) file.
