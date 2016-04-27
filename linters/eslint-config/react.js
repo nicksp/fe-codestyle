@@ -3,7 +3,7 @@
     "react"
   ],
 
-  "extends": "plugin:react/recommended"
+  "extends": "plugin:react/recommended",
 
   "parserOptions": {
     "ecmaFeatures": {
