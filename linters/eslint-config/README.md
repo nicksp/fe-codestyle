@@ -25,7 +25,12 @@ Append content of [`es6.js`](es6.js) in your [`.eslintrc.js`](../.eslintrc.js) f
   ```
 
 - Inject React specific [linting rules](react.js) for ESLint [config file](../.eslintrc.js).
+- Adjust `extends` section of the [config file](../.eslintrc.js), so it reads like that:
+
+  ```json
+  "extends": ["eslint:recommended", "plugin:react/recommended"]
+  ```
 
 ## For Node.js
 
-Append content of [`node.js`](node.js) in your [`.eslintrc.js`](../.eslintrc.js) file.
+Append content of [`node.js`](node.js) into your [`.eslintrc.js`](../.eslintrc.js) file.
