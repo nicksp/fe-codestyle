@@ -21,9 +21,10 @@ I tend to describe it as a clear, concise and predictable approach to writing my
   1. [Conditional Statements](#conditional-statements)
       - [if](#if)
       - [switch](#switch)
-  1. [Loops](#loops)
+  1. [Loop Statements](#loop-statements)
       - [for](#for)
       - [for..in](#forin)
+      - [do..while](#dowhile)
   1. [Operators](#operators)
       - [with](#with)
       - [Comparison Operators](#comparison-operators)
@@ -550,7 +551,7 @@ I tend to describe it as a clear, concise and predictable approach to writing my
 
 ### switch
 
-The switch statement should be written as in the example.
+The `switch` statement should be written as in the example.
 
   ```js
   // Bad
@@ -586,7 +587,7 @@ The switch statement should be written as in the example.
 
 **[⬆ back to TOC](#table-of-contents)**
 
-## Loops
+## Loop Statements
 
 ### for
 
@@ -599,6 +600,19 @@ The switch statement should be written as in the example.
   });
   ```
 - Performance-critical parts of the code can use a regular `for` loop.
+- Expressions, enclosed in round parentheses, should be separated by space after semicolon.
+
+  ```js
+  // Bad
+  for (var i = 0, l = arr.length;i < len ; i++) {
+    someAction();
+  }
+
+  // Good
+  for (var i = 0, l = arr.length; i < len; i++) {
+    someAction();
+  }
+  ```
 
 **[⬆ back to TOC](#table-of-contents)**
 
@@ -611,6 +625,16 @@ The switch statement should be written as in the example.
   Object.keys(obj).forEach(function (key) {
     console.log(key);
   });
+  ```
+
+### do..while
+
+- `while` keyword should be on the same line as the closing brace (like in [conditional statements](#conditional-statements)).
+
+  ```js
+  do {
+    statements;
+  } while (condition);
   ```
 
 **[⬆ back to TOC](#table-of-contents)**
