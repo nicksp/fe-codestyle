@@ -24,6 +24,8 @@ All of these workflows assume that you have a remote repository and by default t
 
 Also, I don't cover every possible detail about git and how it works; thus a certain level of past experience from the you is assumed. By this I mean, for example, if you don't know what a `merge conflict` is you'll need to read up on git a bit more first in order to benefit from this document.
 
+**[⬆ back to TOC](#table-of-contents)**
+
 ## Commit Message Guidelines
 
 I'm using the Angular commit style (even when I don't write any Angular code) which prefixes with `fix:` or `feature:` and subjects are limited to 50 characters with more details in the body. This tend to lead to **more readable messages** that make the commit history looks clear and so much easier to scan through.
@@ -121,7 +123,6 @@ calls, one of which is in tests), and can just be replaced by !eof().
 fail(), clear(n) and exceptions() are just never called. Delete them.
 ```
 
-
 #### Footer
 
 The footer should contain any information about **Breaking Changes** and is also the place to reference GitHub (or other code hosting facilities) issues that this commit **closes**.
@@ -175,6 +176,8 @@ Couple of typos fixed:
 - missing brace
 ```
 
+**[⬆ back to TOC](#table-of-contents)**
+
 ## Centralized Workflow
 
 > Everyone works from the `master` branch
@@ -195,6 +198,8 @@ Couple of typos fixed:
 - Everyone committing to `master` can be uncomfortable for some teams
 - No categorised history, just multiple isolated commits
 - Merge commits are ugly and make the git history harder to reason about
+
+**[⬆ back to TOC](#table-of-contents)**
 
 ## 'Feature Branches' Workflow
 
@@ -229,6 +234,8 @@ Also, when using `--rebase` you do typically experience less conflicts.
 
 - No clean history, just multiple isolated commits
 - Merge commits are ugly and make the git history harder to reason about
+
+**[⬆ back to TOC](#table-of-contents)**
 
 ## 'Rebase Feature Branch Commits' Workflow
 
@@ -276,12 +283,18 @@ Also, the GitHub user interface now (as of 2016) suppports the ability to squash
 
 > Note: if branches are deleted from GitHub then eventually the commits will be garbage collected and history lost there as well. So pick this option according to whether it fits your team's long term needs
 
+**[⬆ back to TOC](#table-of-contents)**
+
 ## Tips
 
 - Read Pro Git.
   The [Pro Git](https://git-scm.com/book/en/v2) book is available online for free, and it's fantastic. Take advantage!
 
+**[⬆ back to TOC](#table-of-contents)**
+
 ## References
 
 - [Atlassian: Comparing Workflows](https://www.atlassian.com/git/tutorials/comparing-workflows)
 - [GitHub: Understanding the GitHub Flow](https://guides.github.com/introduction/flow/)
+
+**[⬆ back to TOC](#table-of-contents)**
