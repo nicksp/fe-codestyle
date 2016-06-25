@@ -12,6 +12,7 @@ Finally decided it's time to make an agreement on how I write front-end code.
 * [Node.js](node.md)
 * [HTML5](html.md)
 * [CSS & Sass](css.md)
+* [Git Workflow](git-workflow.md)
 
 ## Linters
 
