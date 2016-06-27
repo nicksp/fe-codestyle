@@ -40,9 +40,11 @@ I tend to describe it as a clear, concise and predictable approach to writing my
   1. [String Concatenation](#string-concatenation)
   1. [Empty Lines](#empty-lines)
   1. [Comments](#comments)
+  1. [Magic Numbers](#magic-numbers)
   1. [Classes](#classes)
   1. [Enums](#enums)
   1. [Events](#events)
+  1. [Module Definition](#module-definition)
   1. [jQuery](#jquery)
   1. [Testing](#testing)
   1. [Performance](#performance)
@@ -268,6 +270,20 @@ I tend to describe it as a clear, concise and predictable approach to writing my
 
   ```js
   var fellowship = ['foo', 'bar', 'baz'];
+  ```
+
+- Prefer using methods from `[]` over `Array.prototype` to keep it short and more succinct.
+
+  ```js
+  // Good
+  Array.prototype.forEach.call(arguments, function (arg) {
+    console.log(arg);
+  });
+
+  // Better
+  [].forEach.call(arguments, function (arg) {
+    console.log(arg);
+  });
   ```
 
 **[⬆ back to TOC](#table-of-contents)**
@@ -960,6 +976,27 @@ andNowWith(z);
 
 **[⬆ back to TOC](#table-of-contents)**
 
+## Magic Numbers
+
+- Try to ignore usage of magic numbers.
+
+  ```js
+  // Bad: what was 3 again? Text node? Comment?
+  if (el.nodeType === 3) { ... }
+
+  // Bad: The reader doesn't know why we chose 7, and if we change 7 with 8, we'll have to carefully search and replace all occurrences
+  if ($('.blah').length === 7) { ... }
+
+  // Good
+
+  if (el.nodeType === Node.TEXT_NODE) { ... }
+
+  // Good
+  if ($('.blah').length === defaultRoomCount) { ... }
+  ```
+
+**[⬆ back to TOC](#table-of-contents)**
+
 ## Classes
 
 - "Symmetrical" methods should be declared one after the other.
@@ -1054,6 +1091,33 @@ var Color = {
     // Do something with data.itemId
   });
   ```
+
+**[⬆ back to TOC](#table-of-contents)**
+
+## Module Definition
+
+When building a module that can be consumed by a number of different sources, I prefer to use [Universal Module Definition (UMD)](https://github.com/umdjs/umd), so that the module will be compatible with AMD, CommonJS, or plain script inclusion. For modules that are not shared across projects, UMD is not required.
+
+```js
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+      // AMD. Register as an anonymous module.
+      define([], factory);
+    } else if (typeof exports === 'object') {
+      // Node. Does not work with strict CommonJS, but
+      // only CommonJS-like environments that support module.exports, like Node.
+      module.exports = factory();
+    } else {
+      // Browser globals (root is window)
+      root.LibFoo = factory();
+    }
+}(this, function () {
+  'use strict';
+
+  var LibFoo = {};
+  return LibFoo;
+}));
+```
 
 **[⬆ back to TOC](#table-of-contents)**
 
