@@ -359,7 +359,7 @@ Modifier classes are used together with the block and element class, like so:
 
     /* Pseudo Classes */
     &:active {
-        background: blue;
+      background: blue;
     }
 
     &:last-child {
