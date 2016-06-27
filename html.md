@@ -2,6 +2,8 @@
 
 A set of best practices and guidelines for writing HTML. It aims at improving collaboration, code quality, and enabling supporting infrastructure.
 
+This document borrows ideas and rules from different online style guides.
+
 ## Table of Contents
 
   1. [General Formatting Rules](#general-formatting-rules)
@@ -57,6 +59,8 @@ A set of best practices and guidelines for writing HTML. It aims at improving co
   <!DOCTYPE html>
   ```
 
+  Do I have a preference for uppercase vs, e.g. `<!doctype html>`?
+
 - Turn on **IE compatibility mode**. Internet Explorer supports the use of a document compatibility `<meta>` tag to specify what version of IE the page should be rendered as.
 
   ```html
@@ -100,9 +104,11 @@ A set of best practices and guidelines for writing HTML. It aims at improving co
   ```html
   <!-- Not recommended -->
   <script src="//www.site.com/script.js" type="text/javascript"></script>
+  <link rel="stylesheet" href="//www.site.com/css/mania.css" type="text/css">
 
   <!-- Recommended -->
   <script src="//www.site.com/script.js"></script>
+  <link rel="stylesheet" href="//www.site.com/css/mania.css">
   ```
 - Paragraphs of text should always be placed in a `<p>` tag. **Never use multiple `<br>` tags.**
 - Items in list form should always be wrapped with `<ul>`, `<ol>`, or `<dl>`. Never use a set of `<div>` or `<p>`.
