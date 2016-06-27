@@ -9,6 +9,7 @@ This document outlines opinionated CSS and Sass code style guide. Influenced pri
   1. [Terminology](#terminology)
   1. [BEM 101](#bem-101)
   1. [CSS Formatting Rules](#css-formatting-rules)
+  1. [Theming](#theming)
   1. [Sass Specifics](#sass-specifics)
   1. [Resources](#resources)
 
@@ -116,7 +117,7 @@ Though somewhat verbose, this syntax makes it easy to determine the child/parent
   * scalability
   * faster development
   * eliminating specificity problems (because BEM provides unique class names for most styles, you'd depend only on the order of rules)
-  * no more cascades (every BEM CSS class is unique and self-sufficient, doesn't depend on tags or IDs, so we need only a single class name selector to style our BEN entities. In some cases we might need two class names in a selector, when a block modifier affects individual elements, i.e.: .text-input_disabled .text-input __label {})
+  * no more cascades (every BEM CSS class is unique and self-sufficient, doesn't depend on tags or IDs, so we need only a single class name selector to style our BEN entities. In some cases we might need two class names in a selector, when a block modifier affects individual elements, i.e.: *.text-input_disabled .text-input __label {}*)
 
 ### Block
 
@@ -151,7 +152,7 @@ BEM uses CSS class names to denote blocks, elements and modifiers. One DOM node 
 ### Naming Conventions
 
 - Keep the names of blocks, elements and modifiers short and semantic.
-- Use only latin letters, dashes and digits.
+- Use only latin letters, dashes and digits (*words-are-dash-separated*).
 
 Element containers within a block get CSS classes consisting of their block class, two underscores and the element's name:
 
@@ -191,8 +192,6 @@ Modifier classes are used together with the block and element class, like so:
 .block_block-mod-name_block-mod-val__elem-name_elem-mod-name_elem-mod-val
 ```
 
-
-
 **[⬆ back to TOC](#table-of-contents)**
 
 ## CSS Formatting Rules
@@ -202,6 +201,7 @@ Modifier classes are used together with the block and element class, like so:
 - Never reference `js-` prefixed class names from CSS files. `js-` are used exclusively from JS files.
 
   Use the `is-` prefix for state rules that are shared between CSS and JS.
+- **Attribute selectors should be used alone**, just like classes. Example: `[type="text"]` vs `input[type="text"]`
 - **Use [shorthand properties](https://www.w3.org/TR/CSS21/about.html#shorthand) where possible.** Using shorthand properties is useful for code efficiency and understandability.
 
   ```css
@@ -356,6 +356,25 @@ Modifier classes are used together with the block and element class, like so:
 
     /* Other */
     opacity: 1;
+
+    /* Pseudo Classes */
+    &:active {
+        background: blue;
+    }
+
+    &:last-child {
+      border-top: 1px solid blue;
+    }
+
+    /* Pseudo Elements */
+    &::before {
+      content: 'CSS Rules!';
+    }
+
+    /* Child Elements */
+    span {
+      font-weight: bold;
+    }
   }
   ```
 
@@ -391,7 +410,7 @@ Modifier classes are used together with the block and element class, like so:
   }
   ```
 
-- Ensure your code is descriptive and well commented.
+- Ensure your code is descriptive and well commented. When writing comments, it is best to following a format that makes making changes easy, without having to clutter your code.
 
   ```css
   /* ==========================================================================
@@ -406,14 +425,78 @@ Modifier classes are used together with the block and element class, like so:
   /* Basic comment */
 
   .b-header-plate {}
+
+  // OR another format
+
+  // My Component
+  // ============
+  //
+  // Notes:
+  //
+  // 1. This is a direct comment about why we're using display: block
+  // 2. Absolutely positioned relative to the parent .c-my-component
+
+  .c-my-component {
+    position: relative; // 2
+    display: block; // 1
+
+    .some-child {
+      position: absolute; // 2
+    }
+  }
+
+
+  // My Component: Inner
+  // -------------------
+  //
+  // Notes:
+  //
+  // 1. We see the number 1 again! But this note only counts for the code below and ignore the 1 above
+
+  .c-my-component__inner {
+    display: block; // 1
+  }
   ```
+
+**[⬆ back to TOC](#table-of-contents)**
+
+## Theming
+
+When creating theme styles try to stick to these rules:
+
+- Create a `themes.scss` in the `/scss` directory
+- Create a `/theme` directory, in which you will create directories like: `/components`, `/templates`, and any other directories you deem necessary.
+
+So your newly created files and directories should look like the follow (existing files excluded):
+
+```css
+/scss
+    themes.scss
+    /themes
+        /components
+        /templates
+```
+
+Any theme styles you write should go in their appropriate directory in `/themes`. For example, if a `product-list` component is themed, it would belong in `/scss/themes/components/_product-list.scss`.
+
+Any SCSS files created in the `/themes` directory should be formatted as follows
+
+```css
+.x-theme-class-name {
+  .c-component-class-name {
+    // ...
+  }
+}
+```
+
+The `.x-theme-class-name` is basically a global state that we are expecting to be applied on either the HTML, body, or other top level container.
 
 **[⬆ back to TOC](#table-of-contents)**
 
 ## Sass Specifics
 
 - Use the `.scss` syntax, never the original `.sass` syntax.
-- **Nesting.** As a rule of thumb, avoid unnecessary nesting in SCSS. Just because you can nest, doesn't mean you always should. Consider nesting only if you must scope styles to a parent and if there are multiple elements to be nested. At most, aim for three levels.
+- **Nesting.** As a rule of thumb, avoid unnecessary nesting in `SCSS`. Just because you can nest, doesn't mean you always should. Consider nesting only if you must scope styles to a parent and if there are multiple elements to be nested. At most, aim for three (3) levels deep.
 
   ```css
   .page-container {
@@ -427,7 +510,13 @@ Modifier classes are used together with the block and element class, like so:
 
 - **Variables.** Prefer dash-cased variable names (e.g. `$my-variable`) over camelCased or snake_cased variable names. It is acceptable to prefix variable names that are intended to be used only within the same file with an underscore (e.g. `$_my-variable`).
 - **Mixins.** Mixins should be used to DRY up your code, add clarity, or abstract complexity -- in much the same way as well-named functions. Mixins that accept no arguments can be useful for this, but note that if you are not compressing your payload (e.g. gzip), this may contribute to unnecessary code duplication in the resulting styles.
+- **Global vs. Local Variables/Mixins** Any `$variable` that is used in more than one file should be placed in the `/variables.scss` file. Others should be placed at the top of the file in which they're used. Any `@mixin` that is used in more than one file should be placed in the `/utilities` folder.
 - **Extend.** `@extend` directives [should be](http://csswizardry.com/2014/11/when-to-use-extend-when-to-use-a-mixin/) [avoided](http://csswizardry.com/2014/01/extending-silent-classes-in-sass/) because it has unintuitive and potentially dangerous behavior, especially when used with nested selectors. Even extending top-level placeholder selectors can cause problems if the order of selectors ends up changing later (e.g. if they are in other files and the order the files are loaded shifts).
+- **Filename naming convention** The file naming convention should be identical to the class naming convention as described above, but with the following difference:
+    - Sass files (technical scss files) should be a Sass partial (prepended with a underscore `_`)
+    - Sass files are named after it's root class name
+        - the filename can be named after the grouping of elements (Example `ul`, `ol` and `li` can be grouped together in `_list.scss`)
+        - in case of a component, the base component will be the filename (i.e. `color-picker` makes `_color-picker.scss`)
 - **Operators.** For improved readability, wrap all math operations in parentheses with a single space between values, variables, and operators.
 
   ```css
