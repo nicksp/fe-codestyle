@@ -978,7 +978,7 @@ andNowWith(z);
 
 ## Magic Numbers
 
-- Try to ignore usage of magic numbers.
+- Try to avoid usage of magic numbers.
 
   ```js
   // Bad: what was 3 again? Text node? Comment?
