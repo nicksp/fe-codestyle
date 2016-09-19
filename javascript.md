@@ -102,6 +102,8 @@ I tend to describe it as a clear, concise and predictable approach to writing my
   console.log('even when not required');
   ```
 
+You can read my reasoning [here](https://gist.github.com/nicksp/02134673b5c15a2c3035284e3cfdfdf8).  
+
 **[⬆ back to TOC](#table-of-contents)**
 
 ## Commas
